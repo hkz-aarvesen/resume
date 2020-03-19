@@ -48,8 +48,21 @@ Worked with a small team on many projects over many years.  Our initial focus wa
 **Senior Software Engineer, Architect**
 
 Hired to work on a toolset for the 360Commerce product suite. After a month, I was asked to examine the current build process, resulting in a 22 page document. From there, I joined the team responsible for software architecture.
+
 The company already practiced many agile tenets (particularly stand up meetings). Taking lessons from IronGrid, I spearheaded a move from a weekly build to continuous integration. I evangelized the benefit of JUnit in the build process. I advocated standardization on an IDE. I streamlined the process where possible (for instance, in moving from PVCS to CVS, drastically reducing the amount of time spent checking in and synchronizing code).
+
 The biggest challenge at 360Commerce was intra-company communication. I began on a personal level by interviewing, meeting, and going to lunch with all of the different toolset stakeholders: product development, services, marketing, sales, QA. I followed the same procedure when writing the build process docs. I then volunteered to give brown bag talks about JUnit. As my role evolved into architecture, I made sure to stay in touch by attending other groups' stand up meetings.
+
 With the new focus on architecture, I took a look at development from a business perspective. I measured the improvements we had made at the tactical level (for instance, continuous integration increased the successful build rate 300%). I set about to document and communicate across the teams, using a wiki with great success. I documented successful and failed contractor projects to attempt to find the sweet spot of third party efforts. And, when necessary, I got my hands dirty again by cranking code on the inventory product.
+
+**November 2002 – August 2003 : IronGrid, Inc.**\
+**Lead Developer**
+
+Started a venture funded software company with the founders of Garden.com.  The goal was to produce low cost, high quality software to aid the (Java) development process.  Solely wrote the first two of three products and shipped all three products on schedule.  After evaluating and rejecting both SWT and non-Java GUIs, I developed the Swing interfaces from scratch.  This allowed the software to run comparatively under Windows, Linux, and OSX. 
+
+Responsibilities beyond productive coding included interviewing, requirements gathering, new product evaluation, hacking CVS, etc. etc.
+
+As our group grew to four people, we faced new challenges in ensuring that information flowed efficiently.   I instituted XP style “stand up meetings” to keep us apprised of each other’s progress. I modified the automated builds to be both more verbose and more frequent.  I gave up JBuilder for NetBeans (which everyone else used) so that we were all using the same IDE, thus eliminating distracting differences in code formatting, conventions, compiler warnings, and project structures.
+
 
 
