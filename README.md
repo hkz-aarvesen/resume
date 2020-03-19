@@ -2,11 +2,9 @@
 
 ### Education
 
-Bachelor in Philosophy
-
-University of Texas at Austin, May 1993
-
-With High, Special, and Departmental Honors
+Bachelor in Philosophy\
+University of Texas at Austin, May 1993\
+With High, Special, and Departmental Honors\
 
 
 ### Relevant Technical Skills
@@ -18,8 +16,8 @@ I communicate effectively on a business as well as a technical level. I view cod
 
 ## Work Experience
 
-*January 2015 - Present: WP Engine
-Senior Staff Engineer, Engineering Manager, Principal Engineer*
+**January 2015 - Present: WP Engine**
+**Senior Staff Engineer, Engineering Manager, Principal Engineer**
 
 
 WPEngine is the pre-eminent managed WordPress host.  Application stack is hosted 100% in the cloud, mainly at AWS and GCP.  Each year I worked on something different: the php API and billing migration, AWS infrastructure and clusters, Rails front end hosted on Heroku, golang SSH backend in Kubernetes, managing two teams that worked on the PHP and the WordPress stack, and most recently on the SRE team.
