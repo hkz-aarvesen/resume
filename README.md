@@ -28,7 +28,7 @@ I set out to make the workplace be the kind of place I wanted to be at.  I took 
 **July 2013 – January 2015 : MyDocket**\
 **Principal Developer**
 
-Small Austin Ventures startup that did sales enablement.  The django/psql backend was hosted on AWS, code hosted in github, most local development on Macs.  I was exposed to python, new features in Postgres (windows, common table expressions), modern javascript (require, jQuery, grunt, jasmine), and the AWS ecosystem (EC2, EBS, S3, cloudfront, etc).  Had my hands in each piece of the stack from front end JS; build automation and continuous integration; experimental OpenOffice integration; third party integration with Salesforce, Crocodoc, and Linkedin; SQL query reporting and optimization; AMI creation and deployment; ansible scripting; and who knows what else.
+Small Austin Ventures startup that did sales enablement.  The django/psql backend was hosted on AWS, code hosted in github, most local development on Macs.  I was exposed to python, new features in Postgres (windows, common table expressions), modern javascript (require, jQuery, grunt, jasmine), and the AWS ecosystem (EC2, EBS, S3, cloudfront).  Had my hands in each piece of the stack from front end JS; build automation and continuous integration; experimental OpenOffice integration; third party integration with Salesforce, Crocodoc, and Linkedin; SQL query reporting and optimization; AMI creation and deployment; ansible scripting; and who knows what else.
 
 The company went through several pivots. Original product was a pure django system for “hosted showrooms in the cloud”.  Next iteration moved the focus to “sharing content in the cloud”.  Then we moved into gmail integration, and then we moved fully to email tracking via gmail.  Final iterations included an Outlook plugin written in C#. 
 
@@ -60,9 +60,13 @@ With the new focus on architecture, I took a look at development from a business
 
 Started a venture funded software company with the founders of Garden.com.  The goal was to produce low cost, high quality software to aid the (Java) development process.  Solely wrote the first two of three products and shipped all three products on schedule.  After evaluating and rejecting both SWT and non-Java GUIs, I developed the Swing interfaces from scratch.  This allowed the software to run comparatively under Windows, Linux, and OSX. 
 
-Responsibilities beyond productive coding included interviewing, requirements gathering, new product evaluation, hacking CVS, etc. etc.
+Responsibilities beyond productive coding included interviewing, requirements gathering, new product evaluation, hacking CVS, and so on.
 
 As our group grew to four people, we faced new challenges in ensuring that information flowed efficiently.   I instituted XP style “stand up meetings” to keep us apprised of each other’s progress. I modified the automated builds to be both more verbose and more frequent.  I gave up JBuilder for NetBeans (which everyone else used) so that we were all using the same IDE, thus eliminating distracting differences in code formatting, conventions, compiler warnings, and project structures.
 
+**July 2002 – October 2002 : AlterPoint, Inc.**\
+**Contract Development**
+
+Used the JAGS framework we developed at Elysium to kick start a web based UI for AlterPoint’s network configuration software.  While there, I beat our scheduled work pace by thirty percent, developed an integrated build process, taught the rest of their UI team how to use JUnit and our framework, developed their log4j scheme, fixed and submitted a crashing bug in Tomcat, and added SSL support to their product install.
 
 
