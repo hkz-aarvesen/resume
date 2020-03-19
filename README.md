@@ -70,3 +70,10 @@ As our group grew to four people, we faced new challenges in ensuring that infor
 Used the JAGS framework we developed at Elysium to kick start a web based UI for AlterPoint’s network configuration software.  While there, I beat our scheduled work pace by thirty percent, developed an integrated build process, taught the rest of their UI team how to use JUnit and our framework, developed their log4j scheme, fixed and submitted a crashing bug in Tomcat, and added SSL support to their product install.
 
 
+**September 2001 – June 2002 : Elysium Partners**\
+**Senior Software Engineer**
+
+Developed code to support a high end, fractional ownership real estate business.  In direct contrast to RTT, this project used almost 100% open software: Apache, Catalina, and JBoss running on Linux boxes, using MySQL as a back end, all built on Java.  Since the code was open source, we could implement many things that were difficult or impossible to do using closed source software: I wrote a new subclass of the jspc compiler, we extensively modified the Apache struts framework, and wrote our own XML config files.
+
+Of historical note, this is the company that sowed the seed for HomeAway (now VRBO).
+
