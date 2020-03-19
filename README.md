@@ -77,3 +77,34 @@ Developed code to support a high end, fractional ownership real estate business.
 
 Of historical note, this is the company that sowed the seed for HomeAway (now VRBO).
 
+
+**June 2001 – September 2001 : Real Time Ticketing**\
+**Director of Programming**
+
+RTT had originally hired Ernst and Young to write a custom B2B application.  At the time of my hire, the original four month project had stretched into a year.  In the three months I worked with them, we took complete control of the source code in house, moved the servers into a production co-location facility, brought on the first six customers, went to a weekly release cycle, integrated Fedex shipping into the back end, integrated real time ticketing information into our first web site, rewrote the build process for hands free releases, and codified an XML interface with remote users.
+
+The application was written in a combination of ASP/VB/COM+, running on Win2K servers, using SQL Server as a back end, and, naturally, served via IIS.  
+
+**September 1996 – December 2000 : Garden.com**\
+**Senior Developer**
+
+Built the web site (CGI written in C) from the ground up with three other developers. After the CTO stepped aside from day to day operations, I was the main person in charge of our back end systems and the web site. At the time of Garden’s closure, we were migrating from our C site to a Java based EJB site.  
+
+Garden offered many opportunities to expand my skill sets in both technical and non-technical areas. On the technical side we dealt with many disparate technologies (Net Gravity, Digital Impact, our C to Java port, and much more) as well as pushed the envelope in our own code with things such as our patent pending caching scheme. On the non-technical side, I lead several successful projects that had only a minor coding component, I volunteered as a mentor for new employees, and helped Garden create a website for the non-profit people4people organization.
+
+While at Garden, I helped to develop FastSQL (patent application #20020091712) that later became the popular open source product p6spy.
+
+**April 1994 – September 1996 : Trilogy Development Group**\
+**Data Manager, Developer**
+
+I started off at the bottom of the totem pole typing in data. Went on to manage a ten man data team. I realized that I preferred a more hands on role and moved off into the development area of pcOrder. I became extremely proficient with VB and perl at this point: the stand alone client was written in VB, I wrote a few giant Access apps to keep track of our sku data, and perl performed tasks that ranged from code generation (from a 4D mac database to Trilogy’s CML) to data conversion (from a COBOL system to another Trilogy technology, PriceBuilder).
+
+**August 1993 – April 1994 : Apple Computers**\
+**Customer Support**
+
+Answered phones to resolve K-12 customers’ ordering problems. Great job for a 22 year old slacker, but I got bored enough to rewrite File Maker Pro databases during lunchtime. Somebody liked the databases, knew someone else, and that’s what lead to Trilogy when the contract was up. The customer support group used those databases for years after I left.
+
+## Contact
+
+Github: hkz-aarvesen
+EMail: first name dot last name at that Google mail site
