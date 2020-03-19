@@ -25,9 +25,8 @@ WPEngine is where I became interested in running great teams.  What could I do t
 
 I set out to make the workplace be the kind of place I wanted to be at.  I took over the bi-weekly staff meeting and changed it into a late night show format. I organized Chaos Weeks to practice chaos engineering.  I organized and taught a section of an R&D new employee orientation.  I organized events around fixing our monolith (“Nasboxxening Days”).  I re-organized our Hackathon presentations to run smoothly.  I strove to have a greater impact than the delivery of code by a single person.  I wanted to be a force multiplier.
 
-July 2013 – January 2015 : MyDocket
-Principal Developer
-------
+**July 2013 – January 2015 : MyDocket**\
+**Principal Developer**
 
 Small Austin Ventures startup that did sales enablement.  The django/psql backend was hosted on AWS, code hosted in github, most local development on Macs.  I was exposed to python, new features in Postgres (windows, common table expressions), modern javascript (require, jQuery, grunt, jasmine), and the AWS ecosystem (EC2, EBS, S3, cloudfront, etc).  Had my hands in each piece of the stack from front end JS; build automation and continuous integration; experimental OpenOffice integration; third party integration with Salesforce, Crocodoc, and Linkedin; SQL query reporting and optimization; AMI creation and deployment; ansible scripting; and who knows what else.
 
