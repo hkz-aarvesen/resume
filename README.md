@@ -17,6 +17,7 @@ In the past have done
 - Java and Lucene, Struts, Tomcat, EJB
 - C and CGI
 - VB and Access
+- Sprites on C64
 - Smattering of COM, C++, C#
 - Took a Scala class, but it hasn't stuck
 
