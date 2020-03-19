@@ -1,0 +1,18 @@
+# and, amazingly, ctrl x + ctrl r will re-read this file (??)
+# do dos style completion - hooray! (vs 'complete' command)
+TAB: menu-complete
+# dos style clear line with two escapes
+"\e\e": kill-whole-line
+# shift-tab?
+# do: cat, then ctrl+v, then shift+tab to see.
+# the two bracket style is apparently what Mac uses
+#"\e[Z": menu-complete-backward
+# bash under OSX apparently doesn't recognize the above
+# so pass a negative argument to menu-complete, which just happens to
+# be bound to ctrl+i.  This is not at all obvious
+# http://www.tikirobot.net/wp/2006/03/29/reverse-menu-complete-in-bash/
+"\e[Z":"\e--\C-i"
+
+# and ignore case for completion, naturally
+# edit: well, actually, pretty annoying under Unix
+#set completion-ignore-case on
