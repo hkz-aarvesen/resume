@@ -2,7 +2,7 @@
 
 30+ years experience.
 
-Currently (March 2020) writing python and bash to support AWS.  After 7 years, took and passed the "Associate Solution Architect" certification.
+Currently (March 2020) writing python and bash to support AWS.
 
 In the past have done
 
@@ -10,11 +10,11 @@ In the past have done
 - PHP and Wordpress
 - Ansible and Bash
 - Heaps of SQL
-- Frontend Javascript
+- Frontend Javascript and JQuery
 - Python and Django
 - Ruby and Rails
-- ETLs using Rake, Perl, CMD (y'know, Windows NT type scripting)
-- Java and Lucene, Struts, Tomcat, EJB
+- ETLs using Rake, Perl, CMD (Windows NT scripting)
+- Java and Lucene, Struts, Tomcat, EJB, Swing
 - C and CGI
 - VB and Access
 - Sprites on C64
