@@ -1,0 +1,53 @@
+#!/bin/bash  -x
+
+usage() {
+    cat << USAGE
+$*
+
+usage: $(basename $0) [--help] [--expiry] hostname [port]
+Show the SSL certificate for a certain host
+
+where:
+
+--help    this message
+--expiry  grep for expiration of cert
+port      port to check (default: 443)
+USAGE
+    exit 1
+
+}
+
+if [[ "$1" == "--help" || "$1" == "-h" ]] ; then
+    usage
+fi
+
+PATTERN=.
+if [[ "$1" == "--expiry" || "$1" == "-e" || "$1" == "--expiration" ]] ; then
+    PATTERN=Not
+    shift
+fi
+
+
+if [[ "$1" == "" ]] ; then
+    usage Missing host name
+else
+    host=$1
+    shift
+    if [[ $host == http* ]] ; then
+        #echo "(removing leading http(s)://)"
+        host=$( echo "$host" |  perl -pe 's#^https?://##' )
+    fi
+fi
+
+if [[ "$1" == "" ]] ; then
+    port=443
+else
+    port=$1
+    shift
+fi
+
+
+echo | openssl s_client -showcerts -servername $host -connect $host:$port 2>/dev/null | \
+    openssl x509 -inform pem -noout -text | \
+    grep $PATTERN
+

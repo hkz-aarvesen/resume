@@ -1,0 +1,20 @@
+#!/bin/bash 
+
+shopt -s nullglob
+
+
+if [[ "$*" == "" ]] ; then
+    pattern=.
+else
+    pattern=$@
+fi
+
+for jar in *.jar ; do
+    echo $jar:
+    jar tvf $jar | grep $pattern
+done
+
+for tar in *.tar  *tar.gz ; do
+    echo $tar:
+    tar tvf $tar | grep $pattern
+done

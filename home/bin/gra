@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ "$1" == "" ] ; then
+    echo "Missing remote name"
+    exit
+fi
+
+localname=$1
+remotename=$1
+
+if [ "$1" == "upstream" ] ; then
+    remotename=wpengine
+fi
+
+spec=`git remote -v | perl -ne "while (<>) { s!:([^/]+)/!:$remotename/!; print /\w+\s+(\S+)/; exit;}"`
+
+git remote add $localname $spec
+git pull $localname

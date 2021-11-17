@@ -1,0 +1,366 @@
+#!/bin/bash
+
+usage() {
+
+# get all the cheats from this file
+cheats=$( grep  -o "^cheat_[a-z]\+" $0 | sed -e 's/^cheat_//' | sort | awk 'BEGIN {ORS="|"} {print $1}' | sed -e 's/\|$//' )
+
+cat <<USAGE
+$*
+usage:
+ $(basename $0) [-h] [$cheats]
+
+where:
+ -h       this message
+ <other>  cheats for each utility
+
+USAGE
+    exit 1
+}
+
+cheat_aws() {
+    cat <<CHEAT
+
+# detailed cloud formation events
+$ aws --region us-east-2 cloudformation \\
+     describe-stack-events \\
+     --max-items 50 \\
+      --stack-name Cluster96224
+
+
+** QUERY EXAMPLES **
+perform client side filtering of output using '--query'
+see https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html
+and https://jmespath.org/
+
+# List stacks which are complete
+$ aws --region us-east-1 cloudformation \\                                                
+    list-stacks  \\                                                                      
+    --query "StackSummaries[?!contains(@.StackStatus, 'COMPLETE')].[StackName][] "
+
+
+# Show instances that have a 'Backup' or 'backup' key
+$ aws ec2 --region us-east-1 describe-instances  \\
+    --query "Reservations[].Instances[] | [? Tags[? Key == 'Name']] | [? Tags[? Key == 'Backup' || Key == 'backup']].[Tags[? Key == 'Name'].Value] | [] | []"
+
+# Show instances that do no have a 'Backup' key
+$ aws-okta exec corp --  aws ec2 --region us-east-1 describe-instances  \\
+    --query "Reservations[].Instances[? ! not_null( Tags[?Key == 'Backup'].Value) ].[Tags[? Key == 'Name'].Value] | [] | [] | []"
+CHEAT
+}
+
+cheat_ansible() {
+    cat <<CHEAT
+$ ansible -i <inventory>  \$(hostname) -m "debug" -a "var=groups"      list the group hiearchy this host knows about
+$ ansible -i <inventory> --list-hosts protostaging                    list hosts in the "protostaging" group 
+$ ansible-playbook -i <inventory>  remote.yml -l <hostname>           run remote (from cm server)
+$ ansible-playbook -i inventory/local_cluster_only.py  -l \$(hostname) local.yml 
+                                                                      run local (from target machine)
+$ ansible -i /opt/server-cm/inventory/server_meta.py \\
+    -m shell -a 'cd /opt/server-cm;ansible-playbook -i inventory/server_meta.py -l \$(hostname) local.yml' \\
+    <hosts> 
+                                                                      run local (from cm server)
+
+** inventory **
+inventory/production/server_meta.py                                   inventory from server_meta script
+inventory/development_corporate                                       static list of inventory from file
+inventory/local_cluster_only.py                                       dynamic inventory for just this cluster
+
+CHEAT
+
+}
+
+cheat_apt() {
+    cat <<CHEAT
+
+$ apt update                   refresh apt lists
+$ apt install <file>           install a .deb from a file (you may have to 
+                               append ./<file> to make it look like a file name)
+$ apt list --installed         list installed packages
+$ apt-cache policy <package>   show you what verison of the package is installed
+$ apt-config dump              list apt configuration
+$ apt-config shell <varname> <configpath>            
+                               output a configpath value that can be used to create a shell var.
+                               configpath can be postfixed with /f or /d to force it to be a full
+                               path or a directory.  eg
+                               apt-config shell KEYRING Dir::Etc::Trusted/f
+
+$ dpkg -c <file>               list contents of the package file
+$ dpkg -e <file>               extract control info (including postinst) from the package 
+$ dpkg -I <file>               list dependencies of the package file
+$ dpkg -S                      list contents of a package (maybe?)
+
+CHEAT
+
+}
+
+cheat_bash() { 
+    cat <<CHEAT
+>( cmd )                                        process substition - write output to \`cmd\` (see:
+                                                https://www.linuxjournal.com/content/shell-process-redirection)
+<( cmd )                                        process substition - read output from \`cmd\`.
+exec somecmd                                    replace current executing program with \`somecmd\`.
+exec > log.txt                                  special case of exec: redirect this shell's stdout to \`log.txt\`.
+exec > >(tee -a log.txt ) 2>&1                  combo: redirect shell's stdout to and stderr to process 
+                                                running \`tee\`. This will both log values and continue 
+                                                to print them to the screen.
+printf -v bytes '%s bytes' \$(( bits / 8 ))      store value in variable \`bytes\` rather than printing.
+
+ls > somefile.txt 2>&1                          redirect stderr and stdout to somefile.txt
+ls 2>&1 > somefile.txt                          copy stderr to stdout then redirect stdout to somefile.txt
+ls 2>&1 | tee somefile.txt                      copy stderr to stdout and pipe stdout to tee
+ls | tee somefile.txt 2>&1                      pipe stdout to tee then copy stderr to stdout (NOT WHAT YOU WANT)
+                                                Note that pipe isn't the same as redirection; it only attaches stdout to stdin
+
+hash -r                                         rehash path (ie notice if something has moved on the path)
+
+cat << HEREDOC > somefile                       create file from heredoc
+cat << 'HEREDOC'                                single quotes mean no variable expansion in the heredoc
+cat <<-HEREDOC                                  suppress leading tabs (not spaces!) in the doc
+
+trap "exit" SIGINT                              let ctrl+c exit whole script
+
+rehash -r                                       reload/rehash the files in the dirpath
+CHEAT
+
+}
+
+cheat_bc() {
+    cat <<CHEAT
+bc is pretty much better than dc unless
+- you really want rpn
+- more easily reuse last
+
+ibase=16                       type in hex, print results in decimal
+                               easy way to translate A0 to 160
+obase=16                       type in dec, print results in hex
+scale=5                        show 5 decimal places (default: 0)
+last                           use last value in calculatin (e.g. last * 16)
+
+CHEAT
+
+}
+
+cheat_cmdline() {
+    cat <<CHEAT
+Moving
+ctrl+a           front of line
+ctrl+e           end of line
+opt+← / esc b    move back a word
+opt+→ / esc f    move forward a word
+
+Deleting
+ctrl+d           delete character forwards
+ctrl+w           delete word backwards
+ctrl+k           delete (kill) line from cursor to end
+ctrl+u           delete line from cursor to beginning (mnemonic: ugh!!)
+
+Substitution
+!!               re-run last command
+esc+.            fill in last word from previous command (e.g. "mkdir foo" then "cd esc+.")
+
+https://catonmat.net/ftp/readline-emacs-editing-mode-cheat-sheet.pdf
+CHEAT
+}
+
+cheat_gcloud() {
+    cat <<CHEAT
+$ gcloud components update                update to latest gcloud
+$ gcloud config get-value project         list current project
+$ gcloud config set project <value>       set current project
+$ gcloud projects list                    list all projects
+CHEAT
+
+}
+
+cheat_git() {
+    cat <<CHEAT
+$ git branch -al                              list all branches
+$ git branch -vv                              list all branches, showing tracking matched to local
+$ git log --patch                             "full" diff per commit
+$ git log --name-only                         list the file names in each commit
+$ git reset HEAD~                             undo last checkin (https://stackoverflow.com/questions/927358/how-do-i-undo-the-most-recent-local-commits-in-git)
+$ git status -s                               short mode
+$ git status -sb                              short mode with branch information (such as remote tracking)
+
+CHEAT
+
+}
+
+
+cheat_jq() {
+    cat <<CHEAT
+Handy references
+    https://jqplay.org/
+    https://stedolan.github.io/jq/manual/
+ 
+$ jq -r                                                             "raw" output; do not write as json quoted strings
+$ jq -r '.time + " " + .cluster_id'                                 output as concated strings
+$ jq '.extra_props[] | select(.key == "cluster_id") | .value'       given: {extra_props: {key="cluster_id", value="1234"}} print "1234"
+$ jq '. | debug'                                                    prints out current state
+CHEAT
+}
+
+cheat_ldap() {
+    cat <<CHEAT
+
+** Nomenclature **
+DN                        Means "distnguished name".  The (more or less) unique identifier
+RDN                       Relative distinguished name.  One of the parts of the DN.
+                          The left most identifier is often called "the RDN"
+"uid=alan,ou=People"      Whole thing is DN.  "uid=alan" is "the" RDN.  "ou=People" is "an" RDN.
+
+** Querying **
+(uid=alan)                exact match
+(uid=alan,ou=People)      exact match with multiple RDN
+(uid=a*)                  wild card match
+(!(uid=a*))               NOT filter
+(|(uid=a*)(uid=b*))       OR filter
+(&(uid=a*)(uid=b*))       AND filter
+(&(objectClass=Person)(|(sn=Jensen)(cn=Babs J*)))    Composite (a & (b | c))
+
+** LDAP URL-like SYNTAX FOR SSSD  **
+search_base[?scope?[filter][?search_base?scope?[filter]]*]
+ou=People                             just the search base
+ou=People?onelevel                    search base plus scope (base, onelevel or subtree)
+ou=People??(|(uid=a*)(uid=b*)         search base plus filter (note no scope so "??")
+ou=People???ou=Robots                 two search bases (note "???" for empty scope and filter, and
+                                      a final "?" to indicate new URL)
+
+
+** LDAP TOOLS **
+ldapvi -h ldapi:/// -Y EXTERNAL -b cn=config                     ldap vi locally, 'base' set to cn=config
+ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=config dn      print distinguished names from base (?)
+slapcat                                                          dump ldap db to stdout as ldif format
+
+CHEAT
+
+}
+
+cheat_ls() {
+    cat <<CHEAT
+
+$ ls -p                   postpend a slash to directory names
+$ ls -d                   list directory names, not cotents, and show full path
+$ ls -dp | grep -v '/$'   list only files
+
+CHEAT
+
+}
+
+cheat_make() {
+    cat <<CHEAT
+
+$ make -rRd target           concise list of what is getting evaluated by target
+$ make -n target             no-op invocation (aka dry-run)
+
+VARNAME  = "\$(othervar)"     recursive assignment.  will expand othervar each invocation.
+VARNAME := "\$(othervar)"     simple assignment.  will expand othervar only during assignment.
+VARNAME ?= "\$(othervar)"     conditional assignment. recursive assignment, but can override 
+                             on command line: \`VARNAME=whatever make\`
+
+CHEAT
+
+}
+
+cheat_proc() {
+    cat <<CHEAT
+
+/proc/<pid>/fd              open file descriptors
+/proc/<pid>/limits          various limits (open fds, etc)
+/proc/<pid>/status          run time info (thread count, etc)
+CHEAT
+
+}
+
+
+cheat_screen() {
+    cat <<CHEAT
+Don't know if in screen
+$ echo \$STY       will be non blank if you are inside of a screen
+
+Outside of screen
+$ screen -ls         list running screens
+$ screen -S name     start session 'name'
+$ screen -r name     reattach to session 'name'
+$ screen -d name     detach the session 'name'
+$ screen -d -r name  reattach 'name', detaching it first if necessary
+
+Inside of screen
+$ ^a+?            screen help
+$ ^a+d            detach and leave running
+$ ^a+esc          enter command mode (like vi, can scroll screen)
+$ ^a+F            fit text to physical screen
+$ exit            exit and return to original process
+
+CHEAT
+
+}
+
+cheat_service() {
+    cat <<CHEAT
+
+service <service name> star|stop|..        performs command on the named service.
+                                           this will (usually) delegate control to systemctl or init script
+service --status-all                       shows status for all **init** scripts
+
+systemctl start|stop|... <service name>    performs command against systemd script
+systemctl list-units                       lists all **loaded** units
+systemctl list-unit-files                  list all units on disk 
+
+CHEAT
+
+}
+
+cheat_systemctl() {
+    cheat_service
+}
+
+
+cheat_vi() {
+    cat <<CHEAT
+
+:vert term       split vertically and open a terminal
+:w !sudo tee %   write only trick
+
+WINDOWS
+CTRL+W v         split veritcally
+CTRL+W >/<       increase / decrease current window width
+CTRL+W +/-       increase / derease current window width
+CTRL+W =         try to equalize window sizes
+CHEAT
+}
+
+
+
+
+cheat_wpeapi() {
+    cat <<CHEAT
+$ wpeapi server_meta cid=None option=block-from-signups value=1                   list all servers that have this value
+$ wpeapi server_meta 1234 block-from-signups                                      list value, if set, for this option for this cluster
+$ wpeapi --delete server_meta 1234 instance=pod option=block-from-signups         delete the value
+$ wpeapi --post server_meta 1234 instance=pod option=block-from-signups value=1   set the value
+
+
+CHEAT
+
+}
+
+
+if [[ "$1" == "-h" || "$1" == "--help" ]] ; then
+    usage
+elif [[ "$1" == "" ]]; then
+    cheat=cmdline
+else
+    cheat=$1
+    shift
+fi
+
+printf "Cheats for $cheat...\n\n"
+
+cheat_$cheat 2> /dev/null
+
+# detect command not found
+if [[ $? == 127 ]] ; then
+    usage No cheatsheet found for \'$cheat\'
+fi

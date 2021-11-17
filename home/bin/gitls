@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$1" == "" ] ; then
+    git status -s
+else
+    status=$1
+    shift
+    if [ "$status" != '??' ] ; then
+        status="^ *$status"
+    fi
+    git status -s | grep "$status" | awk '{print $2}'
+fi
