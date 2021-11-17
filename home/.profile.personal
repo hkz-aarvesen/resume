@@ -1,0 +1,65 @@
+# need following to get colorized LS
+export CLICOLOR=1
+
+# shorter prompt
+export PS1='\h:\w $ '
+
+function wvi() {
+    vi `which $*`
+}
+function fvi() {
+    vi $( find . -name $* )
+}
+function copy() {
+    echo Running cp as a function
+    cp $* 
+}
+function dir() {
+    echo Running ls as a function
+    ls -ltra $* 
+}
+
+
+export WORKON_HOME=$HOME/.virtualenvs
+
+function mkvirtualenv() {
+  local env
+  env=$WORKON_HOME/$1
+
+  if [ -d $env ] ; then
+    echo Error: environment $env already exists
+  else
+    python3 -m venv $env
+  fi
+}
+
+function workon() {
+  local env
+  local envname=$1 
+
+  if [[ "$envname" == "." ]] ; then
+      envname=$( basename $( pwd -P ) )
+  fi
+
+  env=$WORKON_HOME/$envname
+
+  if [ ! -d $env ] ; then
+    echo Error: environment $env not found
+    read -p "Would you like to create it? [y/n] " create
+    if [[ "$create" == "y" || "$create" == "Y" ]] ; then
+        mkvirtualenv $envname
+        workon $envname
+    fi
+  else
+    source $env/bin/activate
+  fi
+}
+
+export -f workon
+export -f mkvirtualenv
+
+# GPG + yubikey ssh experiment
+# to change this back to regular old ssh_auth_sock you need to do... wat
+GPG_PREFIX='/usr/local'
+export SSH_AUTH_SOCK="$(${GPG_PREFIX}/bin/gpgconf --list-dirs agent-ssh-socket)"
+${GPG_PREFIX}/bin/gpgconf --launch gpg-agent
