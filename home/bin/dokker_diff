@@ -1,0 +1,120 @@
+#!/bin/bash 
+
+# alpine
+#   good for nginx, mysql, etc type services
+#   not good for python, C, ruby - anything that is "compilable" stuff
+# run command layers - worth bringing up now?
+#
+# environmental variables
+# secrets - how do we handle things like a secret file, things that don't fit into a env (e.g. ssl certs, private keys)
+#   mount the secret file into docker, use the orchestrator to help with storing the secret securely in the host
+# app armor in the docker?
+#   This is more of a VM concern than a docker concern
+
+set -ue
+
+exec 3>&1
+
+usage() {
+    cat <<USAGE
+$*
+Usage: $0 diff <image 1> <image 2>
+Where: "image" is an image name or image:tag combination
+USAGE
+    exit 1
+}
+
+message() {
+    echo $0 : $* >&3
+}
+
+
+mkworking() {
+    local first=$( subst_slash $1 )
+    local second=$( subst_slash $2 )
+    echo "/tmp/docker_diff/$first-$second"
+}
+
+subst_slash() {
+    echo $* | sed -e 's/\//_/g'
+}
+
+mkclean() {
+    message "Ensuring clean directory $1"
+    rm -rf "$1"
+    mkdir -p "$1"
+}
+
+chkimage() {
+    local image=$1
+    local count=$( docker images -q $image | wc -l )
+    if (( $count == 0 )) ; then
+        message "Error: Image $image does not exist; check 'docker images'"
+        exit 1
+    elif (( $count > 1 )) ; then
+        message "Warning: Image $image has multiple images; 'latest' tag will (probably) be used"
+    fi
+}
+
+
+mkTar() {
+    local image=$1
+    local tarball=$2
+    local pid
+    
+
+    message "Launching $image..."
+
+    pid=$( docker run -d $image ) > /dev/null
+
+    message "Exporting $image to $tarball..."
+    docker export -o $tarball $pid
+
+    message "Stopping $image ($pid)...."
+    docker stop $pid
+}
+
+listTar() {
+    local tarball=$1
+    local cleanfile="$1.clean"
+  
+    message "Writing listing of $tarball to $cleanfile..."
+
+    tar tvf $tarball | awk '{print $1, $2, $3, $4, $5, $9}' > $cleanfile
+    echo "$cleanfile"
+}
+
+
+if [[ $# != 2 ]] ; then
+    usage "Wrong number of arguments"
+fi
+
+imgFirst=$1
+imgSecond=$2
+shift
+shift
+
+if [[ "$imgFirst" == "$imgSecond" ]] ; then
+    usage "Refusing to diff identical images"
+fi
+
+chkimage "$imgFirst"
+chkimage "$imgSecond"
+
+workingdir=$( mkworking "$imgFirst" "$imgSecond" )
+mkclean $workingdir
+
+cd $workingdir
+tarFirst=$( subst_slash "$imgFirst.tar" )
+tarSecond=$( subst_slash "$imgSecond.tar" )
+
+mkTar "$imgFirst" "$tarFirst"
+mkTar "$imgSecond" "$tarSecond"
+
+cleanFirst=$( listTar "$tarFirst")
+cleanSecond=$( listTar "$tarSecond")
+
+diffTarget=diff.txt
+
+message "Diffing files to $workingdir/$diffTarget"
+diff $cleanFirst $cleanSecond > $diffTarget

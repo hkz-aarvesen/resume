@@ -1,0 +1,53 @@
+#!/bin/bash
+
+docker_clean() {
+    docker ps -a | awk '/Exited / || /Created / {print $1}' | xargs docker rm -f
+    docker images | grep "<none>" | awk '{print $3}' | xargs docker rmi -f
+}
+
+docker_connect() {
+    docker exec -it $1 /bin/bash
+}
+
+docker_rmvolumes() {
+    docker volume ls | perl -alne 'next if $. == 1; print $F[1];' | xargs docker volume rm
+}
+
+docker_stop() {
+    docker ps -a -q | xargs -P 8 -I % docker stop %
+}
+
+docker_oneshot() {
+    docker run --rm -it $* /bin/bash
+}
+
+docker_prune() {
+    docker image prune -f 
+    docker container prune -f 
+    docker system prune -f
+}
+
+
+if [[ "$1" == "clean" ]] ; then
+    docker_clean && docker_prune
+elif [[ "$1" == "prune" ]] ; then
+    docker_prune
+elif [[ "$1" == "connect" ]] ; then
+    shift
+    docker_connect $1
+elif [[ "$1" == "stop" ]] ; then
+    shift
+    docker_stop $*
+elif [[ "$1" == "oneshot" ]] ; then
+    shift
+    docker_oneshot $*
+elif [[ "$1" == "nuke" ]] ; then
+    shift
+    docker_stop && docker_clean && docker_rmvolumes && docker_prune
+elif [[ "$1" == "diff" ]] ; then
+    # dokker_diff is an external script
+    shift
+    dokker_diff $*
+else
+    docker $*
+fi
