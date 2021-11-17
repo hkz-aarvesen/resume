@@ -16,3 +16,5 @@ TAB: menu-complete
 # and ignore case for completion, naturally
 # edit: well, actually, pretty annoying under Unix
 #set completion-ignore-case on
+
+# to reload, either: ctl+x then ctl+r or "bind -f ~/.inputrc"
