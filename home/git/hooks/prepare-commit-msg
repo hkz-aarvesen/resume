@@ -1,0 +1,29 @@
+#!/usr/bin/env perl -w
+#
+# This looks to see if the current branch begins with a name
+# that looks like a Jira ticket (like ABC-1235).  If it does,
+# and the message does not already have a Jira ticket in it,
+# we'll prepend the ticket number to the checkin message.
+#
+# This makes it easier for future us to see what ticket corresponds
+# to each of the commits when looking through history.
+
+my $msgfile  = shift @ARGV;
+my $branch   = `git symbolic-ref --short HEAD`;
+my $isjira   = "^([A-Z]+-\\d+)";
+my ($issue)  = ($branch =~ /$isjira/);
+
+if ($issue) {
+    local $/ = undef;
+    my ($fh, $msg);
+
+    open($fh, "+<", $msgfile);
+    $msg  = <$fh>;
+
+
+    unless ($msg =~ /$isjira/) {
+        seek($fh, 0, 0);
+        print $fh ($issue, " ", $msg); 
+    }  
+    $fh->close;
+}
