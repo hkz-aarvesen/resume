@@ -2,10 +2,11 @@
 
 30+ years experience.
 
-Currently (March 2020) writing python and bash to support AWS.
+Currently (January 2021) working on migrating 10,000 hosts to Kubernetes and rolling TLS certificates.
 
 In the past have done
 
+- AWS and GCP
 - Go and Kubernetes
 - PHP and Wordpress
 - Ansible and Bash
@@ -19,7 +20,7 @@ In the past have done
 - VB and Access
 - Sprites on C64
 - Smattering of COM, C++, C#
-- Took a Scala class, but it hasn't stuck
+- Took a Scala class, but it didn't stick
 
 ## This repo
 
