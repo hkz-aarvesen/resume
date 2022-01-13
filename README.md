@@ -26,4 +26,6 @@ In the past have done
 
 [Detailed resume](RESUME.md)
 
+[Bullet point resume](SHORT-RESUME.md)
+
 [Things that live in my home directory](home)
