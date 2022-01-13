@@ -31,14 +31,15 @@ Engineering leader who speaks both human and computer.
 **MyDocket**\
 **Principal Developer**
 
-- Django Web Site
-  - Postgres db
-  - MongoDB for event logging
-  - RabbitMQ + flower for image processing and upload
-  - jQuery, require, grunt, jasmine
-- Salesforce and LinkedIn integration in python
-- Outlook integration in C#
-- Hosted in AWS
+- Engineering
+  - Django Web Site
+    - Postgres db
+    - MongoDB for event logging
+    - RabbitMQ + flower for image processing and upload
+    - jQuery, require, grunt, jasmine
+  - Salesforce and LinkedIn integration in python
+  - Outlook integration in C#
+  - Hosted in AWS
 - Thought Leadership
   - Ansible and vagrant to improve development experience
  
@@ -78,7 +79,7 @@ Engineering leader who speaks both human and computer.
   - Java on the desktop
   - Swing and JDBC
 - Thought Leadership
-  - Standup, which at the time was unheard of
+  - Standup, which was unheard of at the time
   
 
 **AlterPoint, Inc.**\
