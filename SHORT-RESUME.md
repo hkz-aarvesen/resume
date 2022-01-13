@@ -5,7 +5,7 @@ Engineering leader who speaks both human and computer.
 ## Work Experience
 
 **WP Engine**\
-**Senior Staff Engineer, Engineering Manager, Principal Engineer**
+**Principal Engineer**
 
 - Engineering
   - TLS/PKI management
