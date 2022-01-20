@@ -186,13 +186,17 @@ CHEAT
 
 cheat_git() {
     cat <<CHEAT
-$ git branch -al                              list all branches
-$ git branch -vv                              list all branches, showing tracking matched to local
-$ git log --patch                             "full" diff per commit
-$ git log --name-only                         list the file names in each commit
-$ git reset HEAD~                             undo last checkin (https://stackoverflow.com/questions/927358/how-do-i-undo-the-most-recent-local-commits-in-git)
-$ git status -s                               short mode
-$ git status -sb                              short mode with branch information (such as remote tracking)
+$ git branch -al            list all branches
+$ git branch -vv            list all branches, showing tracking matched to local
+$ git cat-file              print size, contents, type, or hash (!!!) of an object in the repository (example of terrible git ui)
+$ git fetch -p              prune out of date remote branches on fetch
+$ git log --patch           "full" diff per commit
+$ git log --name-only       list the file names in each commit
+$ git reset HEAD~           undo last checkin (https://stackoverflow.com/questions/927358/how-do-i-undo-the-most-recent-local-commits-in-git)
+$ git pull -p               prune out of date remote branches on pull
+$ git push -u origin HEAD   push current branch (HEAD) to remote named 'origin' and turn on tracking
+$ git status -s             short mode
+$ git status -sb            short mode with branch information (such as remote tracking)
 
 CHEAT
 
