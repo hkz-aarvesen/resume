@@ -90,6 +90,7 @@ $ dpkg -e <file>               extract control info (including postinst) from th
 $ dpkg -I <file>               list dependencies of the package file
 $ dpkg -S                      list contents of a package (maybe?)
 
+$ ar -t <file>                 list contents of debian if you don't have dpkg (eg MacOS)
 CHEAT
 
 }
@@ -161,6 +162,16 @@ esc+.            fill in last word from previous command (e.g. "mkdir foo" then 
 
 https://catonmat.net/ftp/readline-emacs-editing-mode-cheat-sheet.pdf
 CHEAT
+}
+
+cheat_debian() {
+    echo "(Really showing apt cheats)"
+    cheat_apt
+}
+
+cheat_dpkg() {
+    echo "(Really showing apt cheats)"
+    cheat_apt
 }
 
 cheat_gcloud() {
