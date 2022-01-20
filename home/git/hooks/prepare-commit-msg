@@ -1,12 +1,33 @@
 #!/usr/bin/env perl -w
 #
-# This looks to see if the current branch begins with a name
-# that looks like a Jira ticket (like ABC-1235).  If it does,
-# and the message does not already have a Jira ticket in it,
-# we'll prepend the ticket number to the checkin message.
+# Ensure that all commit messages are prefixed with
+# a ticket number, if appropriate.
+#
+# First, see if the current branch begins with something
+# that looks like a Jira ticket (like ABC-1235).
+# If the branch does start with a ticket,
+# check to see if the message already begins with
+# something that looks like a Jira ticket.
+#
+# If the message does not start with a ticket, then prepend
+# the ticket number from the branch.
 #
 # This makes it easier for future us to see what ticket corresponds
 # to each of the commits when looking through history.
+#
+# Examples:
+# branch: "a new branch"
+# msg:    "a message"
+# result: "a message"
+#
+# branch: "ABC-123.a-new-branch
+# msg:    "a message"
+# result: "ABC-123 a message"
+#
+# branch: "ABC-123.a-new-branch
+# msg:    "XYZ-789 a message"
+# result: "XYZ-789 a message"
+#
 
 my $msgfile  = shift @ARGV;
 my $branch   = `git symbolic-ref --short HEAD`;
@@ -20,10 +41,9 @@ if ($issue) {
     open($fh, "+<", $msgfile);
     $msg  = <$fh>;
 
-
     unless ($msg =~ /$isjira/) {
         seek($fh, 0, 0);
-        print $fh ($issue, " ", $msg); 
-    }  
+        print $fh ($issue, " ", $msg);
+    }
     $fh->close;
 }
