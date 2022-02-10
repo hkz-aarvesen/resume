@@ -14,6 +14,8 @@ where:
  -h       this message
  <other>  cheats for each utility
 
+Also check 'wpecheat' for WPEngine specific cheats
+
 USAGE
     exit 1
 }
@@ -389,21 +391,6 @@ CTRL+W >/<       increase / decrease current window width
 CTRL+W +/-       increase / decrease current window height 
 CTRL+W =         try to equalize window sizes
 CHEAT
-}
-
-
-
-
-cheat_wpeapi() {
-    cat <<CHEAT
-$ wpeapi server_meta cid=None option=block-from-signups value=1                   list all servers that have this value
-$ wpeapi server_meta 1234 block-from-signups                                      list value, if set, for this option for this cluster
-$ wpeapi --delete server_meta 1234 instance=pod option=block-from-signups         delete the value
-$ wpeapi --post server_meta 1234 instance=pod option=block-from-signups value=1   set the value
-
-
-CHEAT
-
 }
 
 
