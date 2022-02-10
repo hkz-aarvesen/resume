@@ -107,6 +107,7 @@ exec > >(tee -a log.txt ) 2>&1                  combo: redirect shell's stdout t
                                                 to print them to the screen.
 printf -v bytes '%s bytes' \$(( bits / 8 ))      store value in variable \`bytes\` rather than printing.
 
+>&2 ls                                          copy stdout to stderr then ls; writes to stderr rather than stdout
 ls > somefile.txt 2>&1                          redirect stderr and stdout to somefile.txt
 ls 2>&1 > somefile.txt                          copy stderr to stdout then redirect stdout to somefile.txt
 ls 2>&1 | tee somefile.txt                      copy stderr to stdout and pipe stdout to tee
@@ -122,6 +123,10 @@ cat <<-HEREDOC                                  suppress leading tabs (not space
 trap "exit" SIGINT                              let ctrl+c exit whole script
 
 rehash -r                                       reload/rehash the files in the dirpath
+
+while read -r line; do                          read each line from "filename" into variable "line"
+  # whatever                                     include "IFS=" to avoid trimming whitespace
+done < filename
 CHEAT
 
 }
@@ -136,7 +141,7 @@ ibase=16                       type in hex, print results in decimal
                                easy way to translate A0 to 160
 obase=16                       type in dec, print results in hex
 scale=5                        show 5 decimal places (default: 0)
-last                           use last value in calculatin (e.g. last * 16)
+last                           use last value in calculation (e.g. last * 16)
 
 CHEAT
 
@@ -162,6 +167,27 @@ esc+.            fill in last word from previous command (e.g. "mkdir foo" then 
 
 https://catonmat.net/ftp/readline-emacs-editing-mode-cheat-sheet.pdf
 CHEAT
+}
+
+cheat_curl() {
+    cat <<CHEAT
+curl https://somehost --resolve somehost:443:1.1.1.1:443            use the supplied IP+port when resolving the specified host+port
+curl --data @file                                                   use specificed file for the data values
+CHEAT
+
+}
+
+cheat_date() {
+    cat <<CHEAT
+date -r EPOCHSECONDS                mac: convert from seconds to human date
+date -d @EPOCHSECONDS               linux: convert from seconds to human date
+CHEAT
+
+}
+
+cheat_dc() {
+    echo "(forwarding to bc)"
+    cheat_bc
 }
 
 cheat_debian() {
@@ -334,7 +360,7 @@ CHEAT
 cheat_service() {
     cat <<CHEAT
 
-service <service name> star|stop|..        performs command on the named service.
+service <service name> start|stop|...      performs command on the named service.
                                            this will (usually) delegate control to systemctl or init script
 service --status-all                       shows status for all **init** scripts
 
@@ -360,7 +386,7 @@ cheat_vi() {
 WINDOWS
 CTRL+W v         split veritcally
 CTRL+W >/<       increase / decrease current window width
-CTRL+W +/-       increase / derease current window width
+CTRL+W +/-       increase / decrease current window height 
 CTRL+W =         try to equalize window sizes
 CHEAT
 }
