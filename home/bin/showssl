@@ -1,5 +1,10 @@
 #!/bin/bash  -x
 
+# showssl - print out the x509 certificate from a particular https endpoint
+# optionally, just print out the expiration
+# uses arcane openssl that you will never remember
+#
+
 usage() {
     cat << USAGE
 $*

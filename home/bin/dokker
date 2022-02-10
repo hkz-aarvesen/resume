@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# dokker: a collection of "missing" docker commands
+
 docker_clean() {
     docker ps -a | awk '/Exited / || /Created / {print $1}' | xargs docker rm -f
     docker images | grep "<none>" | awk '{print $3}' | xargs docker rmi -f

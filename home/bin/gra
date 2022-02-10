@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# gra - "git remote add"
+# add a new remote for this repo.  Helpful for quickly adding someone's fork of the same name
+
 if [ "$1" == "" ] ; then
     echo "Missing remote name"
     exit

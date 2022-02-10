@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# stripper - stripes whitespace from the file per git's "stripspace" command
+# note that this modifies the file on disk
+
 if [ -z $1 ] ; then
   echo "Missing filename(s)"
   exit 1

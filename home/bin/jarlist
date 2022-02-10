@@ -1,5 +1,10 @@
 #!/bin/bash 
 
+# jarlist: list contents of jar and tar archives, optionally grepping for pattern
+# indispenisble for finding where that one class is in a bunch of jars
+
+# this makes `*.jar` expand to nothing if there are no jarfiles
+# otherwise, it'll expand to literal star-dot-jar
 shopt -s nullglob
 
 

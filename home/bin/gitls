@@ -1,5 +1,26 @@
 #!/bin/bash
 
+# gitls - does a concise list of changes in the current git project
+# with no flag, prints all changed/unknown items and their status
+# with a flag, prints out just the filenames which are in that status.
+#
+# e.g.
+#
+# (all changes)
+# $ gitls
+# M gra
+# M stripper
+# ?? unknown.txt
+#
+# (just modified)
+# $ gitls M
+# gra
+# stripper
+#
+# (now add all those modified items at once)
+# $ gitls M | xargs git add
+#
+
 if [ "$1" == "" ] ; then
     git status -s
 else

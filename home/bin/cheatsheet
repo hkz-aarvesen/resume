@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# cheatsheet: because who remembers which of those screen commands are actually useful
+
 usage() {
 
 # get all the cheats from this file
