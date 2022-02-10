@@ -7,7 +7,7 @@ if [ -z $1 ] ; then
   echo "Missing filename(s)"
   exit 1
 elif [ ! -e $1 ] ; then
-  echo Cannot file requested filename: $1
+  echo Cannot find requested filename: $1
   exit 1
 fi
 for file in $* ; do
