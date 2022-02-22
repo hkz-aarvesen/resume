@@ -425,4 +425,4 @@ if [[ $? == 127 ]] ; then
     usage No cheatsheet found for \'$cheat\'
 fi
 
-wpecheat -q $cheat
+wpecheat $cheat 2>&1 > /dev/null && wpecheat $cheat
