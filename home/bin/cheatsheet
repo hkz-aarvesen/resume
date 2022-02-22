@@ -246,6 +246,17 @@ $ jq '. | debug'                                                    prints out c
 CHEAT
 }
 
+cheat_kubectl() {
+    cat <<CHEAT
+$ kubectx                  third party tool for context
+$ kubens                   third party tool for namespace
+CHEAT
+}
+
+cheat_k8s() {
+    cheat_kubectl
+}
+
 cheat_ldap() {
     cat <<CHEAT
 
@@ -413,3 +424,5 @@ cheat_$cheat 2> /dev/null
 if [[ $? == 127 ]] ; then
     usage No cheatsheet found for \'$cheat\'
 fi
+
+wpecheat -q $cheat
