@@ -1,0 +1,48 @@
+#!/bin/bash
+
+usage() {
+    cat << USAGE
+$*
+usage: mkkey [-e email] [-t target]  filename
+Write a new keypair (filename and filename.pub) into the target dir
+
+-h   this message
+-e   email to use (default is '$email')
+-t   target directory (default is '$target')
+USAGE
+    exit 1
+}
+
+email=alan.arvesen@wpengine.com
+target=./tmpd
+
+if [[ "$1" == "--help" || "$1" == "-h" ]] ; then
+    usage
+fi
+
+if [[ "$1" == "-e" ]] ; then
+    if [[ -z $2 ]] ; then
+        usage "Missing email parameter"
+    fi
+    email=$2
+    shift
+    shift
+fi
+
+if [[ "$1" == "-t" ]] ; then
+    if [[ -z $2 ]] ; then
+        usage "Missing target parameter"
+    fi
+    target=$2
+    shift
+    shift
+fi
+
+if [[ "$1" == "" ]] ; then
+    usage "Missing file name"
+fi
+filename=$1
+
+echo "Using $email in key generation..."
+
+ssh-keygen -t rsa -b 4096 -C "$email" -f $target/$filename
