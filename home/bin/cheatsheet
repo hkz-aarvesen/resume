@@ -261,9 +261,13 @@ cheat_ldap() {
     cat <<CHEAT
 
 ** Nomenclature **
-DN                        Means "distnguished name".  The (more or less) unique identifier
+DN                        Means "disinguished name".  The fully qualified entry,
 RDN                       Relative distinguished name.  One of the parts of the DN.
                           The left most identifier is often called "the RDN"
+DC                        Domain component.  One of the parts of the DN.  Same as "an" RDN.
+CN                        Common or Canonical Name.  A common domain component.
+                          For x509 (i.e. TLS) certificates, this usually needs to be the hostname
+                          that is presenting the certificate.
 "uid=alan,ou=People"      Whole thing is DN.  "uid=alan" is "the" RDN.  "ou=People" is "an" RDN.
 
 ** Querying **
@@ -288,6 +292,10 @@ ou=People???ou=Robots                 two search bases (note "???" for empty sco
 ldapvi -h ldapi:/// -Y EXTERNAL -b cn=config                     ldap vi locally, 'base' set to cn=config
 ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=config dn      print distinguished names from base (?)
 slapcat                                                          dump ldap db to stdout as ldif format
+ldapwhomami -d 1 -H ldaps://your-host -D 'your-dn' -w your-pass  try to ask server 'your-host' who the DN 'your-dn'
+                                                                 is when passing 'your-pass'.  Use '-d 1' to turn
+                                                                 on debugging output.  Helpful for diagnosing connection
+                                                                 problems.
 
 CHEAT
 
