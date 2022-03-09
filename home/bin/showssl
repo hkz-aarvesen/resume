@@ -1,22 +1,20 @@
-#!/bin/bash  -x
-
-# showssl - print out the x509 certificate from a particular https endpoint
-# optionally, just print out the expiration
-# uses arcane openssl that you will never remember
-#
+#!/bin/bash
 
 usage() {
     cat << USAGE
 $*
 
-usage: $(basename $0) [--help] [--expiry] hostname [port]
+usage: $(basename $0) [--help] [--expiry|--issuer] hostname [port]
 Show the SSL certificate for a certain host
 
 where:
 
---help    this message
---expiry  grep for expiration of cert
-port      port to check (default: 443)
+--help       this message
+-e,--expiry  grep for expiration of cert(s)
+-i,--issuer  grep for issuer and subject of cert(s)
+
+hostname     host to check
+port         port to check (default: 443)
 USAGE
     exit 1
 
@@ -28,7 +26,10 @@ fi
 
 PATTERN=.
 if [[ "$1" == "--expiry" || "$1" == "-e" || "$1" == "--expiration" ]] ; then
-    PATTERN=Not
+    PATTERN="Not (Before|After)"
+    shift
+elif [[ "$1" == "--issuer" || "$1" == "-i" ]] ; then
+    PATTERN="(Issuer|Subject):"
     shift
 fi
 
@@ -42,6 +43,10 @@ else
         #echo "(removing leading http(s)://)"
         host=$( echo "$host" |  perl -pe 's#^https?://##' )
     fi
+    if [[ $host == */* ]] ; then
+        #echo "(removing intermediate slashes)"
+        host=$( echo "$host" |  perl -pe 's#/##g' )
+    fi
 fi
 
 if [[ "$1" == "" ]] ; then
@@ -51,8 +56,43 @@ else
     shift
 fi
 
+tmpfile=/tmp/$(basename $0).$$
 
-echo | openssl s_client -showcerts -servername $host -connect $host:$port 2>/dev/null | \
-    openssl x509 -inform pem -noout -text | \
-    grep $PATTERN
+echo | openssl s_client -showcerts -servername $host -connect $host:$port 2>/dev/null > $tmpfile
 
+
+# s_client outputs a file with multiple parts, separated by `---`
+# connected
+# cert chain
+# leaf certificate issuer and subject
+# client certificate
+# handshake
+# details on ssl session
+#
+# we want the second one, the cert chain.  This looks like:
+#
+# Certificate chain
+#  0 s:CN = *.wpesvc.net
+#    i:C = US, O = DigiCert Inc, CN = RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1
+# -----BEGIN CERTIFICATE-----
+# MIIHhjCCBm6gAwIBAgIQDAuSjpzNIMUv7U0NdbwCRDANBgkqhkiG9w0BAQsFADBZ
+#
+# So. Exclude the "Certificate Chain" line, but include only the certificates.
+# The do each of those bastards.
+# Pipeline is:
+# use perl to split on --- and extract the second record
+# use grep to exclude the 'Certificate chain' line
+# use grep again to exclude anything that starts with a space (so you just get certs)
+# use awk to split the certs and run x509 on each.
+# use grep to find the expiration(s) if desired
+# JFC.
+#
+# It might be nice to print out the cert chain information.
+
+perl -e 'undef $/; @c = split(/^---$/m, <>); print $c[1], "\n";' < $tmpfile |\
+    grep -Ev '^Certificate' |\
+    grep -E  '^[^ ]' |\
+    awk -v RS='-----END CERTIFICATE-----' 'BEGIN {cmd = "openssl x509 -noout -text"} length($0) > 2 {print $0 RS | cmd; close(cmd) }'  |\
+    grep -E "$PATTERN"
+
+rm $tmpfile
