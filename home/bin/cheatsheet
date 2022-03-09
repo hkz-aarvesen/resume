@@ -177,6 +177,7 @@ cheat_curl() {
     cat <<CHEAT
 curl https://somehost --resolve somehost:443:1.1.1.1:443            use the supplied IP+port when resolving the specified host+port
 curl --data @file                                                   use specificed file for the data values
+curl -s                                                             "silent" (eg quiet) mode to suppress progress bars
 CHEAT
 
 }
