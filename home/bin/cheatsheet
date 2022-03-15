@@ -31,17 +31,15 @@ $ aws --region us-east-2 cloudformation \\
      --max-items 50 \\
       --stack-name Cluster96224
 
-
 ** QUERY EXAMPLES **
 perform client side filtering of output using '--query'
 see https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html
 and https://jmespath.org/
 
 # List stacks which are complete
-$ aws --region us-east-1 cloudformation \\                                                
-    list-stacks  \\                                                                      
+$ aws --region us-east-1 cloudformation \\
+    list-stacks  \\
     --query "StackSummaries[?!contains(@.StackStatus, 'COMPLETE')].[StackName][] "
-
 
 # Show instances that have a 'Backup' or 'backup' key
 $ aws ec2 --region us-east-1 describe-instances  \\
@@ -56,13 +54,13 @@ CHEAT
 cheat_ansible() {
     cat <<CHEAT
 $ ansible -i <inventory>  \$(hostname) -m "debug" -a "var=groups"      list the group hiearchy this host knows about
-$ ansible -i <inventory> --list-hosts protostaging                    list hosts in the "protostaging" group 
+$ ansible -i <inventory> --list-hosts protostaging                    list hosts in the "protostaging" group
 $ ansible-playbook -i <inventory>  remote.yml -l <hostname>           run remote (from cm server)
-$ ansible-playbook -i inventory/local_cluster_only.py  -l \$(hostname) local.yml 
+$ ansible-playbook -i inventory/local_cluster_only.py  -l \$(hostname) local.yml
                                                                       run local (from target machine)
 $ ansible -i /opt/server-cm/inventory/server_meta.py \\
     -m shell -a 'cd /opt/server-cm;ansible-playbook -i inventory/server_meta.py -l \$(hostname) local.yml' \\
-    <hosts> 
+    <hosts>
                                                                       run local (from cm server)
 
 ** inventory **
@@ -78,7 +76,7 @@ cheat_apt() {
     cat <<CHEAT
 
 $ apt update                   refresh apt lists
-$ apt install <file>           install a .deb from a file (you may have to 
+$ apt install <file>           install a .deb from a file (you may have to
                                append ./<file> to make it look like a file name)
 $ apt build-dep <item>         install the build dependencies for the item (such as slapd)
 $ apt source <package>         make a local copy of that packages source.  May need to
@@ -86,14 +84,14 @@ $ apt source <package>         make a local copy of that packages source.  May n
 $ apt list --installed         list installed packages
 $ apt-cache policy <package>   show you what verison of the package is installed
 $ apt-config dump              list apt configuration
-$ apt-config shell <varname> <configpath>            
+$ apt-config shell <varname> <configpath>
                                output a configpath value that can be used to create a shell var.
                                configpath can be postfixed with /f or /d to force it to be a full
                                path or a directory.  eg
                                apt-config shell KEYRING Dir::Etc::Trusted/f
 
 $ dpkg -c <file>               list contents of the package file
-$ dpkg -e <file>               extract control info (including postinst) from the package 
+$ dpkg -e <file>               extract control info (including postinst) from the package
 $ dpkg -I <file>               list dependencies of the package file
 $ dpkg -S                      list contents of a package (maybe?)
 
@@ -103,15 +101,15 @@ CHEAT
 
 }
 
-cheat_bash() { 
+cheat_bash() {
     cat <<CHEAT
 >( cmd )                                        process substition - write output to \`cmd\` (see:
                                                 https://www.linuxjournal.com/content/shell-process-redirection)
 <( cmd )                                        process substition - read output from \`cmd\`.
 exec somecmd                                    replace current executing program with \`somecmd\`.
 exec > log.txt                                  special case of exec: redirect this shell's stdout to \`log.txt\`.
-exec > >(tee -a log.txt ) 2>&1                  combo: redirect shell's stdout to and stderr to process 
-                                                running \`tee\`. This will both log values and continue 
+exec > >(tee -a log.txt ) 2>&1                  combo: redirect shell's stdout to and stderr to process
+                                                running \`tee\`. This will both log values and continue
                                                 to print them to the screen.
 printf -v bytes '%s bytes' \$(( bits / 8 ))      store value in variable \`bytes\` rather than printing.
 
@@ -130,7 +128,7 @@ cat <<-HEREDOC                                  suppress leading tabs (not space
 
 trap "exit" SIGINT                              let ctrl+c exit whole script
 
-rehash -r                                       reload/rehash the files in the dirpath
+hash -r                                         reload/rehash the files in the dirpath (rehash in zsh)
 
 while read -r line; do                          read each line from "filename" into variable "line"
   # whatever                                     include "IFS=" to avoid trimming whitespace
@@ -224,7 +222,6 @@ fin                                       finish == step return
 info locals                               show local vars
 CHEAT
 
-
 }
 
 cheat_gcloud() {
@@ -255,17 +252,23 @@ CHEAT
 
 }
 
-
 cheat_jq() {
     cat <<CHEAT
 Handy references
     https://jqplay.org/
     https://stedolan.github.io/jq/manual/
- 
+
+Also note that if you use a filter file you can add newlines and comments.
+
 $ jq -r                                                             "raw" output; do not write as json quoted strings
 $ jq -r '.time + " " + .cluster_id'                                 output as concated strings
+$ jq -f filen                                                       use filters defined in 'filen' (kind of like awk)
 $ jq '.extra_props[] | select(.key == "cluster_id") | .value'       given: {extra_props: {key="cluster_id", value="1234"}} print "1234"
 $ jq '. | debug'                                                    prints out current state
+$ jq '.filters | .[] | .name'                                       .filters : print out the filters key (which is a list)
+                                                                    .[]      : "value iterator": for each entry in the array, apply following filters
+                                                                    .name    : extract name key from each of those entries
+
 CHEAT
 }
 
@@ -310,7 +313,6 @@ ou=People??(|(uid=a*)(uid=b*)         search base plus filter (note no scope so 
 ou=People???ou=Robots                 two search bases (note "???" for empty scope and filter, and
                                       a final "?" to indicate new URL)
 
-
 ** LDAP TOOLS **
 ldapvi -h ldapi:/// -Y EXTERNAL -b cn=config                     ldap vi locally, 'base' set to cn=config
 ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=config dn      print distinguished names from base (?)
@@ -345,7 +347,6 @@ $ lsof -u someone         open files for use 'someone'
 
 CHEAT
 
-
 }
 
 cheat_make() {
@@ -356,7 +357,7 @@ $ make -n target             no-op invocation (aka dry-run)
 
 VARNAME  = "\$(othervar)"     recursive assignment.  will expand othervar each invocation.
 VARNAME := "\$(othervar)"     simple assignment.  will expand othervar only during assignment.
-VARNAME ?= "\$(othervar)"     conditional assignment. recursive assignment, but can override 
+VARNAME ?= "\$(othervar)"     conditional assignment. recursive assignment, but can override
                              on command line: \`VARNAME=whatever make\`
 
 recipe: dep | order-only     the | means "build this if necessary, but don't trigger
@@ -378,7 +379,6 @@ cheat_proc() {
 CHEAT
 
 }
-
 
 cheat_screen() {
     cat <<CHEAT
@@ -412,7 +412,7 @@ service --status-all                       shows status for all **init** scripts
 
 systemctl start|stop|... <service name>    performs command against systemd script
 systemctl list-units                       lists all **loaded** units
-systemctl list-unit-files                  list all units on disk 
+systemctl list-unit-files                  list all units on disk
 
 CHEAT
 
@@ -421,7 +421,6 @@ CHEAT
 cheat_systemctl() {
     cheat_service
 }
-
 
 cheat_vi() {
     cat <<CHEAT
@@ -432,11 +431,10 @@ cheat_vi() {
 WINDOWS
 CTRL+W v         split veritcally
 CTRL+W >/<       increase / decrease current window width
-CTRL+W +/-       increase / decrease current window height 
+CTRL+W +/-       increase / decrease current window height
 CTRL+W =         try to equalize window sizes
 CHEAT
 }
-
 
 if [[ "$1" == "-h" || "$1" == "--help" ]] ; then
     usage
