@@ -22,6 +22,16 @@ USAGE
     exit 1
 }
 
+
+cheat_awk() {
+    cat <<CHEAT
+awk -v p=0 '/-BEGIN CERTIFICATE-/ {p=1} p {sub(/^\s+/, ""); print} /-END CERTIFICATE-/ {p=0}'    print out just certs
+awk -v p=0 -v cmd="openssl x509 -noout -text" '/-BEGIN CERTIFICATE-/ {p=1} p {sub(/^\s+/, ""); c = c \$0 RS} /-END CERTIFICATE-/ {print c | cmd ; close(cmd); p=0; c=""}'           pipe certs to openssl
+CHEAT
+
+
+}
+
 cheat_aws() {
     cat <<CHEAT
 
@@ -62,6 +72,7 @@ $ ansible -i /opt/server-cm/inventory/server_meta.py \\
     -m shell -a 'cd /opt/server-cm;ansible-playbook -i inventory/server_meta.py -l \$(hostname) local.yml' \\
     <hosts>
                                                                       run local (from cm server)
+$ ANSIBLE_STDOUT_CALLBACK=json ANSIBLE_LOAD_CALLBACK_PLUGINS=1        env vars to enable JSON output (great for parsing)
 
 ** inventory **
 inventory/production/server_meta.py                                   inventory from server_meta script
@@ -188,6 +199,7 @@ cheat_date() {
     cat <<CHEAT
 date -r EPOCHSECONDS                mac: convert from seconds to human date
 date -d @EPOCHSECONDS               linux: convert from seconds to human date
+date +%s                            seconds since epoch
 CHEAT
 
 }
@@ -274,6 +286,11 @@ CHEAT
 
 cheat_kubectl() {
     cat <<CHEAT
+$ kubectl config current-context            list current context
+$ kubectl config get-contexts               list known contexts
+$ kubectl config use-context <whatever>     make <whatever> current context
+
+
 $ kubectx                  third party tool for context
 $ kubens                   third party tool for namespace
 CHEAT
@@ -385,6 +402,8 @@ cheat_screen() {
 Don't know if in screen
 $ echo \$STY       will be non blank if you are inside of a screen
 
+cheatsheet https://kapeli.com/cheat_sheets/screen.docset/Contents/Resources/Documents/index
+
 Outside of screen
 $ screen -ls         list running screens
 $ screen -S name     start session 'name'
@@ -394,10 +413,16 @@ $ screen -d -r name  reattach 'name', detaching it first if necessary
 
 Inside of screen
 $ ^a+?            screen help
+
 $ ^a+d            detach and leave running
 $ ^a+esc          enter command mode (like vi, can scroll screen)
 $ ^a+F            fit text to physical screen
 $ exit            exit and return to original process
+
+$ ^a+c            create new window in screen
+$ ^a+^a           change to previous window
+$ ^a+"            list windows
+$ ^a+A            rename current window
 
 CHEAT
 
