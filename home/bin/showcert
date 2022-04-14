@@ -1,0 +1,3 @@
+#!/bin/bash
+
+awk -v p=0 -v cmd="openssl x509 -noout -text" '/-BEGIN CERTIFICATE-/ {p=1} p {sub(/^\s+/, ""); c = c $0 RS} /-END CERTIFICATE-/ {print c | cmd ; close(cmd); p=0; c=""}' $*
