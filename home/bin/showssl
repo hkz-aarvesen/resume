@@ -88,6 +88,7 @@ echo | openssl s_client -showcerts -servername $host -connect $host:$port 2>/dev
 # JFC.
 #
 # It might be nice to print out the cert chain information.
+# ALSO NOTE: this output changes depending on what version of openssl you're using.  This is 1.1.1m
 
 perl -e 'undef $/; @c = split(/^---$/m, <>); print $c[1], "\n";' < $tmpfile |\
     grep -Ev '^Certificate' |\
