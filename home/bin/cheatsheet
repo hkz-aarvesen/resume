@@ -74,6 +74,9 @@ $ ansible -i /opt/server-cm/inventory/server_meta.py \\
                                                                       run local (from cm server)
 $ ANSIBLE_STDOUT_CALLBACK=json ANSIBLE_LOAD_CALLBACK_PLUGINS=1        env vars to enable JSON output (great for parsing)
 
+$ ansible -i inventory/corporate  "ldap_masters:ldap_relays" \        print the variable value for this inventory group;
+    -m debug -a 'msg={{ ldap_vendor_firewall }}'                      lets you debug your group_vars + private_vars settings
+
 ** inventory **
 inventory/production/server_meta.py                                   inventory from server_meta script
 inventory/development_corporate                                       static list of inventory from file
@@ -144,6 +147,20 @@ hash -r                                         reload/rehash the files in the d
 while read -r line; do                          read each line from "filename" into variable "line"
   # whatever                                     include "IFS=" to avoid trimming whitespace
 done < filename
+
+
+while [[ \$# -gt 0 ]]; do                        parse options in while loop
+  case \$1 in
+    -e|--extension)
+      EXTENSION="$2"
+      shift # past argument
+      shift # past value
+    *)
+      POSITIONAL_ARGS+=("\$1") # save positional arg
+      shift
+      ;;
+  esac
+done
 CHEAT
 
 }
@@ -280,6 +297,9 @@ $ jq '. | debug'                                                    prints out c
 $ jq '.filters | .[] | .name'                                       .filters : print out the filters key (which is a list)
                                                                     .[]      : "value iterator": for each entry in the array, apply following filters
                                                                     .name    : extract name key from each of those entries
+
+$ jq '. | .plays[0].tasks[0].hosts | to_entries | reduce .[] as \$item ( {}; . +  {(\$item.key): \$item.value.msg})'
+                                                                    transform ansible json output into a map of hosts to msgs
 
 CHEAT
 }
@@ -443,6 +463,12 @@ CHEAT
 
 }
 
+cheat_ssh() {
+    cat << CHEAT
+$ ssh -n             redirect stdin to /dev/null; needed for background and to prevent ssh from sucking up stdin in a loop
+CHEAT
+
+}
 cheat_systemctl() {
     cheat_service
 }
