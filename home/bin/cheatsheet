@@ -301,6 +301,7 @@ $ jq '.filters | .[] | .name'                                       .filters : p
 $ jq '. | .plays[0].tasks[0].hosts | to_entries | reduce .[] as \$item ( {}; . +  {(\$item.key): \$item.value.msg})'
                                                                     transform ansible json output into a map of hosts to msgs
 
+$  jq -r '.[] | select(.name | test("^pvc"))                       take a list of maps.  Select only maps that have a .name member that matches the regexp
 CHEAT
 }
 
@@ -354,10 +355,10 @@ ou=People???ou=Robots                 two search bases (note "???" for empty sco
 ldapvi -h ldapi:/// -Y EXTERNAL -b cn=config                     ldap vi locally, 'base' set to cn=config
 ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=config dn      print distinguished names from base (?)
 slapcat                                                          dump ldap db to stdout as ldif format
-ldapwhoami -d 1 -H ldaps://your-host -D 'your-dn' -w your-pass   try to ask server 'your-host' who the DN 'your-dn'
+ldapwhoami -d 1 -H ldaps://your-host -D 'cn=bogus' -w your-pass  try to ask server 'your-host' who the DN 'cn=bogus'
                                                                  is when passing 'your-pass'.  Use '-d 1' to turn
                                                                  on debugging output.  Helpful for diagnosing connection
-                                                                 problems.
+                                                                 problems.  Error -1 means can't talk to server, error 49 means bad pw
 
 CHEAT
 
