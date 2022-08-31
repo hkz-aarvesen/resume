@@ -418,6 +418,18 @@ CHEAT
 
 }
 
+cheat_rsyslog() {
+    cat <<CHEAT
+
+### Start writing out local4 log facility (for, e.g., ldap)
+\$ cat /etc/rsyslog.d/51-local4.conf
+\$ModLoad imuxsock.so
+local4.*                 /var/log/local4.log
+
+CHEAT
+
+}
+
 cheat_screen() {
     cat <<CHEAT
 Don't know if in screen
