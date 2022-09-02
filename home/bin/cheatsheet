@@ -281,6 +281,21 @@ CHEAT
 
 }
 
+cheat_journalctl() {
+    cat <<CHEAT
+journalctl -u consul                                   show journal for the "consul" unit (eg service)
+journalctl -u consul --since "10 minute ago"           show consul jorunal for last 10 minutes
+
+** show journal since last invocation consul
+journalctl _SYSTEMD_INVOCATION_ID=\$(systemctl show -p InvocationID --value consul)
+   _SYSTEMD_INVOCATION_ID=... is a general journalctl "FIELD=VALUE" search. See "man systemd.journal-fields" (!!)
+   the systemctl call:
+        -p InvocationID    show this property
+        --value            but only print out the valut
+        consul             for this particular unit
+CHEAT
+}
+
 cheat_jq() {
     cat <<CHEAT
 Handy references
