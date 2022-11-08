@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+   automatically launch the excellent Pulsely Consulting Status Clock, available on the app store
+
+   I run this to get a 24 hour clock in the task bar
+
+   https://www.launchd.info/
+
+   launchctl load ~/Library/LaunchAgents/twentyfourhour.clock.plist
+   launchctl start twentyfourhour.clock
+
+   If you load this script and make changes, you will have to `unload` before you can `load` again
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>twentyfourhour.clock</string>
+  <key>ProgramArguments</key>
+  <array>
+      <string>/usr/bin/open</string>
+      <string>-W</string>
+      <string>/Applications/StatusClock.app</string>
+  </array>
+   <key>KeepAlive</key>
+   <true/>
+</dict>
+</plist>

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+usage() {
+    cat << USAGE
+$*
+
+Show private key fingerprints
+usage:
+$(basename $0) [-h] file...
+
+where:
+-h|--help      this message
+file           one or more filenames to fingerprint
+
+USAGE
+    exit 1
+}
+
+if [[ "$1" == "" ]] ; then
+    usage "Missing filename(s)"
+fi
+
+if [[ "$1" == "-h" || "$1" == "--help" ]] ; then
+    usage
+fi
+
+for file in $* ; do
+	printf "$file: "
+	openssl pkcs8 -in $file -inform PEM -outform DER -topk8 -nocrypt | openssl sha1 -c 
+done
