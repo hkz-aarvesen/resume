@@ -22,14 +22,11 @@ USAGE
     exit 1
 }
 
-
 cheat_awk() {
     cat <<CHEAT
 awk -v p=0 '/-BEGIN CERTIFICATE-/ {p=1} p {sub(/^\s+/, ""); print} /-END CERTIFICATE-/ {p=0}'    print out just certs
 awk -v p=0 -v cmd="openssl x509 -noout -text" '/-BEGIN CERTIFICATE-/ {p=1} p {sub(/^\s+/, ""); c = c \$0 RS} /-END CERTIFICATE-/ {print c | cmd ; close(cmd); p=0; c=""}'           pipe certs to openssl
 CHEAT
-
-
 }
 
 cheat_aws() {
@@ -83,7 +80,6 @@ inventory/development_corporate                                       static lis
 inventory/local_cluster_only.py                                       dynamic inventory for just this cluster
 
 CHEAT
-
 }
 
 cheat_apt() {
@@ -112,7 +108,6 @@ $ dpkg -S                      list contents of a package (maybe?)
 $ ar -t <file>                 list contents of debian if you don't have dpkg (eg MacOS)
 $ find-dbgsym-packages pid     find the debug symbol packages for the pid.  Also can use binaries, etc
 CHEAT
-
 }
 
 cheat_bash() {
@@ -140,14 +135,13 @@ cat << HEREDOC > somefile                       create file from heredoc
 cat << 'HEREDOC'                                single quotes mean no variable expansion in the heredoc
 cat <<-HEREDOC                                  suppress leading tabs (not spaces!) in the doc
 
-trap "exit" SIGINT                              let ctrl+c exit whole script
+trap "exit" SIGINT                              let ^c exit whole script
 
 hash -r                                         reload/rehash the files in the dirpath (rehash in zsh)
 
 while read -r line; do                          read each line from "filename" into variable "line"
   # whatever                                     include "IFS=" to avoid trimming whitespace
 done < filename
-
 
 while [[ \$# -gt 0 ]]; do                        parse options in while loop
   case \$1 in
@@ -162,7 +156,6 @@ while [[ \$# -gt 0 ]]; do                        parse options in while loop
   esac
 done
 CHEAT
-
 }
 
 cheat_bc() {
@@ -178,7 +171,6 @@ scale=5                        show 5 decimal places (default: 0)
 last                           use last value in calculation (e.g. last * 16)
 
 CHEAT
-
 }
 
 cheat_cmdline() {
@@ -209,7 +201,6 @@ curl https://somehost --resolve somehost:443:1.1.1.1:443            use the supp
 curl --data @file                                                   use specificed file for the data values
 curl -s                                                             "silent" (eg quiet) mode to suppress progress bars
 CHEAT
-
 }
 
 cheat_date() {
@@ -218,7 +209,6 @@ date -r EPOCHSECONDS                mac: convert from seconds to human date
 date -d @EPOCHSECONDS               linux: convert from seconds to human date
 date +%s                            seconds since epoch
 CHEAT
-
 }
 
 cheat_dc() {
@@ -250,7 +240,6 @@ directory some/path/name                  add directory to source path
 fin                                       finish == step return
 info locals                               show local vars
 CHEAT
-
 }
 
 cheat_gcloud() {
@@ -260,7 +249,6 @@ $ gcloud config get-value project         list current project
 $ gcloud config set project <value>       set current project
 $ gcloud projects list                    list all projects
 CHEAT
-
 }
 
 cheat_git() {
@@ -278,7 +266,6 @@ $ git status -s             short mode
 $ git status -sb            short mode with branch information (such as remote tracking)
 
 CHEAT
-
 }
 
 cheat_journalctl() {
@@ -325,7 +312,6 @@ cheat_kubectl() {
 $ kubectl config current-context            list current context
 $ kubectl config get-contexts               list known contexts
 $ kubectl config use-context <whatever>     make <whatever> current context
-
 
 $ kubectx                  third party tool for context
 $ kubens                   third party tool for namespace
@@ -376,7 +362,6 @@ ldapwhoami -d 1 -H ldaps://your-host -D 'cn=bogus' -w your-pass  try to ask serv
                                                                  problems.  Error -1 means can't talk to server, error 49 means bad pw
 
 CHEAT
-
 }
 
 cheat_ls() {
@@ -387,7 +372,6 @@ $ ls -d                    list directory names, not cotents, and show full path
 $ ls -1dp | grep -Ev '/$'  list only files
 
 CHEAT
-
 }
 
 cheat_lsof() {
@@ -399,7 +383,6 @@ $ lsof -p 1234            open files for PID 1234
 $ lsof -u someone         open files for use 'someone'
 
 CHEAT
-
 }
 
 cheat_make() {
@@ -420,7 +403,6 @@ recipe: dep | order-only     the | means "build this if necessary, but don't tri
 \$@                           current recipe name
 \$<                           first dependency name
 CHEAT
-
 }
 
 cheat_proc() {
@@ -430,7 +412,6 @@ cheat_proc() {
 /proc/<pid>/limits          various limits (open fds, etc)
 /proc/<pid>/status          run time info (thread count, etc)
 CHEAT
-
 }
 
 cheat_rsyslog() {
@@ -442,7 +423,6 @@ cheat_rsyslog() {
 local4.*                 /var/log/local4.log
 
 CHEAT
-
 }
 
 cheat_screen() {
@@ -474,7 +454,6 @@ $ ^a+a            send literal ctrl-a (e.g. move to front of line)
 $ ^a+A            rename current window
 
 CHEAT
-
 }
 
 cheat_service() {
@@ -489,17 +468,33 @@ systemctl list-units                       lists all **loaded** units
 systemctl list-unit-files                  list all units on disk
 
 CHEAT
-
 }
 
 cheat_ssh() {
     cat << CHEAT
 $ ssh -n             redirect stdin to /dev/null; needed for background and to prevent ssh from sucking up stdin in a loop
 CHEAT
-
 }
+
 cheat_systemctl() {
     cheat_service
+}
+
+cheat_tmux() {
+    cat <<CHEAT
+tmux uses ^b like screen uses ^a
+
+^b ?   help
+^b "   make new pane
+^b E   equalize the size of the panes
+^b o   cycle to next pane
+^b p   cycle to previous plan
+^b :   enter command mode
+
+comands
+:set synchronize-panes on/off  when on, typing into one pane types into all panes
+
+CHEAT
 }
 
 cheat_vi() {
@@ -508,11 +503,15 @@ cheat_vi() {
 :vert term       split vertically and open a terminal
 :w !sudo tee %   write only trick
 
-WINDOWS
-CTRL+W v         split veritcally
-CTRL+W >/<       increase / decrease current window width
-CTRL+W +/-       increase / decrease current window height
-CTRL+W =         try to equalize window sizes
+WINDOW MANAGEMENT
+^W v         split veritcally
+^W >/<       increase / decrease current window width
+^W +/-       increase / decrease current window height
+^W =         try to equalize window sizes
+
+FORMATTING
+{v}}}gq     (normal mode) move to start of paragraph, start selecting, move to end of 2nd paragraph,
+               apply the 'gq' format command
 CHEAT
 }
 
