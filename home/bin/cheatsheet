@@ -488,6 +488,7 @@ tmux uses ^b like screen uses ^a
 ^b "   make new pane
 ^b E   equalize the size of the panes
 ^b o   cycle to next pane
+^b ^o  swap panes (?)
 ^b p   cycle to previous plan
 ^b :   enter command mode
 
