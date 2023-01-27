@@ -405,6 +405,19 @@ recipe: dep | order-only     the | means "build this if necessary, but don't tri
 CHEAT
 }
 
+cheat_patch() {
+    cat <<CHEAT
+local: git diff the_branch...main > thechange.patch
+local: scp thechange.patch remote:~
+
+remote: cd /opt/server-cm
+remote: patch -p1 --dry-run < ~/thechange.patch
+remote: patch -p1 < ~/thechange.patch
+remote: patch -p1 --reverse < ~/thechange.patch
+CHEAT
+
+}
+
 cheat_proc() {
     cat <<CHEAT
 
