@@ -93,6 +93,8 @@ $ apt source <package>         make a local copy of that packages source.  May n
                                have the correct entries in /apt/sources/etc.d
 $ apt list --installed         list installed packages
 $ apt-cache policy <package>   show you what verison of the package is installed
+$ apt-cache rdepends --installed <package>
+                               list the reverse depends (packages that depend on) the package
 $ apt-config dump              list apt configuration
 $ apt-config shell <varname> <configpath>
                                output a configpath value that can be used to create a shell var.
@@ -278,7 +280,7 @@ journalctl _SYSTEMD_INVOCATION_ID=\$(systemctl show -p InvocationID --value cons
    _SYSTEMD_INVOCATION_ID=... is a general journalctl "FIELD=VALUE" search. See "man systemd.journal-fields" (!!)
    the systemctl call:
         -p InvocationID    show this property
-        --value            but only print out the valut
+        --value            but only print out the value
         consul             for this particular unit
 CHEAT
 }
@@ -292,6 +294,7 @@ Handy references
 Also note that if you use a filter file you can add newlines and comments.
 
 $ jq -r                                                             "raw" output; do not write as json quoted strings
+$ jq -j                                                             "join" output; same as raw, but no extra newline
 $ jq -r '.time + " " + .cluster_id'                                 output as concated strings
 $ jq -f filen                                                       use filters defined in 'filen' (kind of like awk)
 $ jq '.extra_props[] | select(.key == "cluster_id") | .value'       given: {extra_props: {key="cluster_id", value="1234"}} print "1234"
@@ -380,7 +383,7 @@ cheat_lsof() {
 $ lsof +d /some/dir       list open files in directory /some/dir, but do not recurse
 $ lsof +D /some/dir       list open files in directory /some/dir, but *do* recurse
 $ lsof -p 1234            open files for PID 1234
-$ lsof -u someone         open files for use 'someone'
+$ lsof -u someone         open files for user 'someone'
 
 CHEAT
 }
