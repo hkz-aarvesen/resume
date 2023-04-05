@@ -258,12 +258,18 @@ cheat_git() {
 $ git branch -al            list all branches
 $ git branch -vv            list all branches, showing tracking matched to local
 $ git cat-file              print size, contents, type, or hash (!!!) of an object in the repository (example of terrible git ui)
+$ git describe              finds the most recent tag that is reachable from a commit. (useless)
 $ git fetch -p              prune out of date remote branches on fetch
 $ git log --patch           "full" diff per commit
 $ git log --name-only       list the file names in each commit
 $ git reset HEAD~           undo last checkin (https://stackoverflow.com/questions/927358/how-do-i-undo-the-most-recent-local-commits-in-git)
 $ git pull -p               prune out of date remote branches on pull
 $ git push -u origin HEAD   push current branch (HEAD) to remote named 'origin' and turn on tracking
+$ git show                  used to view expanded details on Git objects.
+                               tags    - tag message
+                               trees   - names and contents of objects
+                               blobs   - contents of that object
+                               commits - log message and differ
 $ git status -s             short mode
 $ git status -sb            short mode with branch information (such as remote tracking)
 
@@ -323,6 +329,18 @@ CHEAT
 
 cheat_k8s() {
     cheat_kubectl
+}
+
+cheat_less() {
+    cat <<CHEAT
+** Inside of less
+v                invoke the visual editor (usually, vi)
+V                display the version of less
+/pattern         forward search for pattern
+?pattern         backwards search for pattern
+&pattern         filter; only display lines which match pattern
+
+CHEAT
 }
 
 cheat_ldap() {
@@ -517,8 +535,11 @@ CHEAT
 cheat_vi() {
     cat <<CHEAT
 
-:vert term       split vertically and open a terminal
-:w !sudo tee %   write only trick
+COMMAND-LINE MODE
+:set shell=/some/shell  set vi's shell
+:shell                  suspend vi and goto shell (unlike "!", which runs a command and returns)
+:vert term              split vertically and open a terminal
+:w !sudo tee %  i       write only trick
 
 WINDOW MANAGEMENT
 ^W v         split veritcally
