@@ -63,10 +63,9 @@ cheat_ansible() {
 $ ansible -i <inventory>  \$(hostname) -m "debug" -a "var=groups"      list the group hiearchy this host knows about
 $ ansible -i <inventory> --list-hosts protostaging                    list hosts in the "protostaging" group
 $ ansible-playbook -i <inventory>  remote.yml -l <hostname>           run remote (from cm server)
-$ ansible-playbook -i inventory/local_cluster_only.py  -l \$(hostname) local.yml
-                                                                      run local (from target machine)
-$ ansible -i /opt/server-cm/inventory/server_meta.py \\
-    -m shell -a 'cd /opt/server-cm;ansible-playbook -i inventory/server_meta.py -l \$(hostname) local.yml' \\
+$ ansible-playbook -i inventory/current  -l \$(hostname) local.yml     run local (from target machine)
+$ ansible -i /opt/server-cm/inventory/current \\
+    -m shell -a 'cd /opt/server-cm;ansible-playbook -i inventory/current -l \$(hostname) local.yml' \\
     <hosts>
                                                                       run local (from cm server)
 $ ANSIBLE_STDOUT_CALLBACK=json ANSIBLE_LOAD_CALLBACK_PLUGINS=1        env vars to enable JSON output (great for parsing)
@@ -75,6 +74,7 @@ $ ansible -i inventory/corporate  "ldap_masters:ldap_relays" \        print the 
     -m debug -a 'msg={{ ldap_vendor_firewall }}'                      lets you debug your group_vars + private_vars settings
 
 ** inventory **
+inventory/current                                                     symlink to the "correct" inventory script on the host
 inventory/production/server_meta.py                                   inventory from server_meta script
 inventory/development_corporate                                       static list of inventory from file
 inventory/local_cluster_only.py                                       dynamic inventory for just this cluster
@@ -278,11 +278,14 @@ CHEAT
 
 cheat_journalctl() {
     cat <<CHEAT
-journalctl -u consul                                   show journal for the "consul" unit (eg service)
-journalctl -u consul --since "10 minute ago"           show consul jorunal for last 10 minutes
+journalctl -u consul                            show journal for the "consul" unit (eg service)
+journalctl -u consul --since "10 minute ago"    show consul jorunal for last 10 minutes
+journalctl --list-boots                         list reboots (questionable accuracy.
+                                                  Also see 'last reboot')
 
 ** show journal since last invocation consul
 journalctl _SYSTEMD_INVOCATION_ID=\$(systemctl show -p InvocationID --value consul)
+Explanation:
    _SYSTEMD_INVOCATION_ID=... is a general journalctl "FIELD=VALUE" search. See "man systemd.journal-fields" (!!)
    the systemctl call:
         -p InvocationID    show this property
