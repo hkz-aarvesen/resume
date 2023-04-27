@@ -231,16 +231,41 @@ cheat_dpkg() {
 cheat_gdb() {
     cat <<CHEAT
 ** invocations **
-$ gdb -P \$(pidof something)              attach to pid and start debug session
-$ gdb -x initfile                         execute gdb commands in "initfile" before debugging.
-                                          helpful for storing breakpoints.
+$ gdb -P \$(pidof something)         attach to pid and start debug session
+$ gdb -x initfile                    execute gdb commands in "initfile" before debugging.
+                                     helpful for storing breakpoints.
+$ gdb -iex "set auto-load safe-path \$(pwd -P)"
+                                     allow auto run, so you can load the python dasboard from https://github.com/cyrus-and/gdb-dashboard
 
 ** commands **
-break filename:lineno                     good for putting in init file
-bt                                        backtrace; shows the current stack
-directory some/path/name                  add directory to source path
-fin                                       finish == step return
-info locals                               show local vars
+break filename:lineno          good for putting in init file
+b *0xsomeaddress               break on this addresss (such as the ret line in the disassembly of main)
+bt                             backtrace; shows the current stack
+directory some/path/name       add directory to source path
+disas main                     disassemable main
+disas anotherfunc              disassemable a function named 'anotherfunc'
+fin                            finish == step return
+info locals                    show local vars
+info registers                 display registers
+i r ebx                        shorthand for "info registers ebx"; show value of only ebx disas:
+si                             single step (into) instructions
+si 16                          step over 16 instructions (one "line" when displayed x/64x)
+ni                             next intstruction; step over instructions
+
+p/x \$eax & 0xff000000          print as hex the result
+p/t \$eax & 0xff000000          print as binary the result
+p system                       print the address of the system call
+
+set disassembly-flavor intel       show intel rather than AT&T output
+set pagination off                 turn off more
+set {int}(\$ebp-0x84) = 0x804931f   set the memory address specified to the integer value 0x804931f
+
+x/64x \$sp-200                  eXamine (i.e. print)  memory values (first x) for 64 bytes as bytes (second x)
+                               start from the stack pointer minus 200 bytes
+x/s   \$sp-200                  examine the memory as if it was a string (from stack pointer - 200)
+x/i   \$pc                      examine assembly instruction of current line
+x/s   \$ebx                     examine the string that is in the memory location of $ebx (right?)
+
 CHEAT
 }
 
