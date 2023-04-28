@@ -255,6 +255,8 @@ ni                             next intstruction; step over instructions
 p/x \$eax & 0xff000000          print as hex the result
 p/t \$eax & 0xff000000          print as binary the result
 p system                       print the address of the system call
+p \$_siginfo._sifields._sigfault.si_addr
+                               print where the sigsegv just happened
 
 set disassembly-flavor intel       show intel rather than AT&T output
 set pagination off                 turn off more
