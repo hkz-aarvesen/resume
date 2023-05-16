@@ -308,6 +308,23 @@ $ git status -sb            short mode with branch information (such as remote t
 CHEAT
 }
 
+cheat_grep() {
+    cat <<CHEAT
+grep -A N                   show N lines before match
+grep -B N                   show N lines after match
+grep -C N                   show N lines before and after match (C = context, or -A -B)
+grep -c                     print file name and count of matches
+grep -E                     extended (like grouping) regular expressions.
+grep -l                     only print names of matching files
+grep -L                     only print names of non-matching files
+grep -n                     print line numbers along with matches
+grep -R (or -r)             recursive through subdirectories.  Will not follow symlinks unless -S.
+grep -S                     with -r, follow symlinks
+grep -v                     print non-matching lines (v for inVert)
+grep -V                     print version and exit
+CHEAT
+}
+
 cheat_journalctl() {
     cat <<CHEAT
 journalctl -u consul                            show journal for the "consul" unit (eg service)
