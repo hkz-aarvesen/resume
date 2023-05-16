@@ -36,9 +36,12 @@ cheat_aws() {
 $ aws --region us-east-2 cloudformation \\
      describe-stack-events \\
      --max-items 50 \\
-      --stack-name Cluster96224
+     --stack-name Cluster96224
 
-** QUERY EXAMPLES **
+*** FILTER EXAMPLES ***
+perform server side filtering; not supported on all commands
+
+*** QUERY EXAMPLES ***
 perform client side filtering of output using '--query'
 see https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html
 and https://jmespath.org/
@@ -52,7 +55,7 @@ $ aws --region us-east-1 cloudformation \\
 $ aws ec2 --region us-east-1 describe-instances  \\
     --query "Reservations[].Instances[] | [? Tags[? Key == 'Name']] | [? Tags[? Key == 'Backup' || Key == 'backup']].[Tags[? Key == 'Name'].Value] | [] | []"
 
-# Show instances that do no have a 'Backup' key
+# Show instances that do not have a 'Backup' key
 $ aws-okta exec corp --  aws ec2 --region us-east-1 describe-instances  \\
     --query "Reservations[].Instances[? ! not_null( Tags[?Key == 'Backup'].Value) ].[Tags[? Key == 'Name'].Value] | [] | [] | []"
 CHEAT
@@ -245,9 +248,11 @@ directory some/path/name       add directory to source path
 disas main                     disassemable main
 disas anotherfunc              disassemable a function named 'anotherfunc'
 fin                            finish == step return
+find location,+bytes,value     search memory for a value ('help find' for more options)
+info frame                     show current frame informatoin
 info locals                    show local vars
-info registers                 display registers
-i r ebx                        shorthand for "info registers ebx"; show value of only ebx disas:
+info registers                 show registers
+i r ebx                        shorthand for "info registers ebx"; show value of only ebx
 si                             single step (into) instructions
 si 16                          step over 16 instructions (one "line" when displayed x/64x)
 ni                             next intstruction; step over instructions
