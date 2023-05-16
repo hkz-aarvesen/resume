@@ -342,7 +342,12 @@ $ jq '.filters | .[] | .name'                                       .filters : p
 $ jq '. | .plays[0].tasks[0].hosts | to_entries | reduce .[] as \$item ( {}; . +  {(\$item.key): \$item.value.msg})'
                                                                     transform ansible json output into a map of hosts to msgs
 
-$  jq -r '.[] | select(.name | test("^pvc"))                       take a list of maps.  Select only maps that have a .name member that matches the regexp
+$ jq -r '.[] | select(.name | test("^pvc"))                       take a list of maps.  Select only maps that have a .name member that matches the regexp
+$ jq '.Tags | .[] | select(.Key | test("^Name$")) | .Value'       Iterate over the list of Tags and print
+                                                                  the value of the "Name" tag.
+                                                                  If Tags is empty, get an error
+$ jq '.Tags | .[]? | select(.Key | test("^Name$")) | .Value'      Same as above but with ".[]?"
+                                                                  If Tags is empty, do nothing and no error.
 CHEAT
 }
 
