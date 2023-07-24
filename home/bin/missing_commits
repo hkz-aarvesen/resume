@@ -1,0 +1,42 @@
+#!/bin/bash
+
+
+usage() {
+    cat <<EOU
+$*
+usage:
+$0: [-h] [-r] [isin] [notin]
+
+where:
+
+-h      This message
+-r      reverse mode (isin = upstream/develop, notin = upstream/master]
+isin    check for commits in this branch (default:upstream/master)
+notin   check for commits in this branch (default:upstream/develop)
+
+EOU
+   exit 1
+
+}
+
+if [[ "$1" == "-h"  || "$1" == "--help" ]] ; then
+    usage
+elif [ "$1" == "-r" ] ; then
+    echo "Reverse mode detected; checking for new commits in develop"
+    isin=upstream/develop
+    notin=upstream/master
+elif [[ "$1" != "" ]] ; then
+    if [[ "$2" == "" ]] ; then
+        usage "If 'isin' is, 'notin' must also be set"
+    fi
+    isin=$1
+    notin=$2
+    shift;shift
+else
+    echo Checking for commits master that are not in develop
+    isin=upstream/master
+    notin=upstream/develop 
+fi
+
+echo git log $isin ^$notin --no-merges --pretty=oneline 
+git log $isin ^$notin --no-merges --pretty=oneline 
