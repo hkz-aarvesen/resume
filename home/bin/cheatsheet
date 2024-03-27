@@ -589,6 +589,13 @@ comands
 CHEAT
 }
 
+cheat_word() {
+    cat <<CHEAT
+<number> +cmd+opt           change text to header # style
+G +cmd+opt                  go-to (page, eg)
+CHEAT
+}
+
 cheat_vi() {
     cat <<CHEAT
 
