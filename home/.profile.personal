@@ -5,7 +5,7 @@ export CLICOLOR=1
 export PS1='\h:\w $ '
 
 function wvi() {
-    vi "$(which $*)"
+    vi "$(command -v $*)"
 }
 function fvi() {
     vi $( find . -name $* )
