@@ -592,7 +592,9 @@ CHEAT
 cheat_word() {
     cat <<CHEAT
 <number> +cmd+opt           change text to header # style
+A +cmd+opt                  insert annotation (i.e. comment)
 G +cmd+opt                  go-to (page, eg)
+V +cmd+ctl                  paste special
 CHEAT
 }
 
