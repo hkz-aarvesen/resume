@@ -591,10 +591,19 @@ CHEAT
 
 cheat_word() {
     cat <<CHEAT
-<number> +cmd+opt           change text to header # style
+<number> +cmd+opt           apply header # style
 A +cmd+opt                  insert annotation (i.e. comment)
 G +cmd+opt                  go-to (page, eg)
+N +cmd+opt                  change view to Draft at 150% (??)(usually undesired)
+                            use 'print' or 'web' layouts and choose 'markup'
+                            to view annotations
+N +cmd+shf                  apply Normal style
 V +cmd+ctl                  paste special
+V +cmd+opt+shf              paste and match formatting
+Z +cmd                      Change slant (e.g. smart) quote to straight quote
+                            when typed immediately
+Return + cmd                insert page break
+F7                          open grammar check dialog
 CHEAT
 }
 
