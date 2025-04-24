@@ -14,8 +14,16 @@ UNIX hack, past perl guru, former Java expert, versed in C and shell scripting. 
 I communicate effectively on a business as well as a technical level. I view code as a tool to solve the problems that people and businesses have, and I have an innate feel for when those problems are best solved via code and when they are best solved via other means. Results are more important to me than technological dogma. 
 
 ## Work Experience
+**August 2023 - Present: Retiree**\
+_I take my retirement in installments, whenever I can afford it._ - Travis McGee
 
-**January 2015 - Present: WP Engine**\
+- Wrote a novel (_The Hammondale Forest Lab_, currently unpublished)
+- Got in shape: lost 40 pounds, ton of physical therapy, went back to the gym
+- Went to the Electric Daisy Carnival
+- Went to my fiftieth state (shoutout Muskegon, MI)
+- Learned calculus $F(x) = \int_a^x f(t)\ dt$
+
+**January 2015 - July 2023: WP Engine**\
 **Senior Staff Engineer, Engineering Manager, Principal Engineer**
 
 
