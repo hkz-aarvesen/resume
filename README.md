@@ -2,11 +2,12 @@
 
 30+ years experience.
 
-Currently (January 2021) working on migrating 10,000 hosts to Kubernetes and rolling TLS certificates.
+As of January 2021, I was working on migrating 10,000 hosts to Kubernetes and rolling TLS certificates.
 
 In the past have done
 
 - AWS and GCP
+- Docker and more docker
 - Go and Kubernetes
 - PHP and Wordpress
 - Ansible and Bash
