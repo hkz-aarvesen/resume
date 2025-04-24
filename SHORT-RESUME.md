@@ -9,6 +9,8 @@ Engineering leader who speaks both human and computer.
 
 - Engineering
   - TLS/PKI management
+  - SOC2 procedures
+  - Containerization
   - Shipped AWS cluster architecture: cloudformation, lambdas, ebs, ec2
   - Signups in PHP
   - SSH Key management in Rails
@@ -23,6 +25,7 @@ Engineering leader who speaks both human and computer.
     - Organize gamedays for SRE practice and SOC-2 compliance
     - Diagramming sessions to prep for oncall
     - Drive certifications on team (AWS Architect, CKAD)
+    - Semi-annual "happiness is a choice"
   - Company Wide Events
     - Chaos Week
     - NasBoxxening to remove dead code
@@ -42,7 +45,6 @@ Engineering leader who speaks both human and computer.
   - Hosted in AWS
 - Thought Leadership
   - Ansible and vagrant to improve development experience
- 
 
 **Perception Software**\
 **Senior Software Engineer**
@@ -57,8 +59,7 @@ Engineering leader who speaks both human and computer.
   - Lucene, including custom parsers
 - Encompass ETL
   - Rake for orchestration
-  - Lots of technologies in the pipeline: java, groovy, perl, powershell, SQL, ruby, batch. 
-  
+  - Lots of technologies in the pipeline: java, groovy, perl, powershell, SQL, ruby, batch.
 
 **360Commerce, Inc.**\
 **Senior Software Engineer, Architect**
@@ -71,7 +72,6 @@ Engineering leader who speaks both human and computer.
   - Continuous Integration
   - Reduced broken builds 300%
 
-	
 **IronGrid, Inc.**\
 **Lead Developer**
 
@@ -80,7 +80,6 @@ Engineering leader who speaks both human and computer.
   - Swing and JDBC
 - Thought Leadership
   - Standup, which was unheard of at the time
-  
 
 **AlterPoint, Inc.**\
 **Contract Development**
@@ -105,7 +104,6 @@ Engineering leader who speaks both human and computer.
   - Open Source was new and awesome
   - We could extend struts and jspc
 
-	
 **Real Time Ticketing**\
 **Director of Programming**
 
@@ -143,7 +141,6 @@ Engineering leader who speaks both human and computer.
 Bachelor in Philosophy\
 University of Texas at Austin\
 With High, Special, and Departmental Honors
-
 
 ## Contact
 
