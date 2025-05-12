@@ -17,6 +17,7 @@ Engineering leader who speaks both human and computer.
   - SSH Gateway in GoLang and Kubernetes
   - Python, bash, php, ruby, go, SQL, Kubernetes, AWS, GCP, aws-cli, ansible, mysql, more
   - Cloud native GCP and AWS
+  - AWS Solutions Architect
 - Management
   - Managed two teams of 15 people
 - Thought leadership

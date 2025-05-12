@@ -2,12 +2,11 @@
 
 ### Education
 
-Bachelor in Philosophy\
-University of Texas at Austin, May 1993\
-With High, Special, and Departmental Honors
+University of Texas at Austin\
+BA in Philosophy with High, Special, and Departmental Honors
 
 ### Relevant Technical Skills
-UNIX hack, past perl guru, former Java expert, versed in C and shell scripting. Conversant in numerous languages of various strengths and types: VB, awk, sql, html, javascript, ruby, groovy, python, golang, php, more. I easily pick up new languages and technology. My editor of choice is still vi.
+UNIX hack, cloud native, past perl guru, former Java expert, versed in C and shell scripting. Conversant in numerous languages of various strengths and types: VB, awk, sql, html, javascript, ruby, groovy, python, golang, php, more. I easily pick up new languages and technology. My editor of choice is still vi.
 
 
 ### Relevant Professional Skills
