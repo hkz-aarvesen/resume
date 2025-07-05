@@ -1,36 +1,144 @@
-#!/bin/bash
+#!/usr/bin/perl
 
 # cheatsheet: because who remembers which of those screen commands are actually useful
 
-usage() {
+use strict;
+use warnings;
+use Getopt::Long;
+use File::Basename;
 
-# get all the cheats from this file
-cheats=$( grep  -o "^cheat_[a-z]\+" $0 | sed -e 's/^cheat_//' | sort | awk 'BEGIN {ORS="|"} {print $1}' | sed -e 's/\|$//' )
+GetOptions("help" => sub { usage("") }) or exit;
 
-cat <<USAGE
-$*
+my $cheatname = shift || "cmdline";
+my $found     = printCheat($cheatname);
+
+# tell them if you couldn't find it
+if (! $found) {
+    usage("Error: could not find cheat named '$cheatname'");
+}
+
+#---------------------------------------------#
+#              Subs
+#---------------------------------------------#
+
+#-------------------------------------#
+# Print a single cheat
+#-------------------------------------#
+sub printCheat {
+    my ($desired, $isSyno)  = @_;
+    my ($printing, $found);
+    my ($thischeat, $synonym);
+
+    while (<DATA>) {
+        # breaks or comments - skip these lines
+        if (/^::::+/) {
+            next;
+        }
+
+        # a named cheat
+        if (($thischeat) = (/^:::\s*(\w+)/)) {
+            # if you've already $found your desired cheat, you're
+            # at the next cheat, and you should quit
+            if ($found) {
+                last;
+            }
+
+            # if not, see if this is the desired cheat
+            if ($found = ($desired eq $thischeat)) {
+                print "Cheats for $thischeat...\n" unless $isSyno;
+
+                # Special case: the construct "thischeat:thatcheat" means
+                # that "thischeat" is a synonym for "thacheat".  Forward on
+                # to "thatcheat"
+                if (($synonym ) = /\s*$thischeat:(\w+)/) {
+                    print("(printing cheats for '$synonym')\n");
+
+                    # reset the filehandle for reading
+                    seek DATA, 0, 0;
+                    printCheat($synonym, 1);
+                    last;
+                }
+            }
+            next;
+        }
+        print if $found;
+    }
+    close DATA;
+    return $found;
+}
+
+#-------------------------------------#
+# load a sorted list of cheats from DATA
+#-------------------------------------#
+sub loadCheats {
+    my @cheats = ();
+    # we need to rewind if we've already scanned the cheats
+    seek DATA, 0, 0;
+    while (<DATA>) {
+        if (/^:::\s*(\w+)/) {
+            push @cheats, $1;
+        }
+    }
+    close DATA;
+    return @cheats;
+}
+
+#-------------------------------------#
+#     help or error function
+#-------------------------------------#
+sub usage {
+    my $prog   = basename($0);
+    my $cheats = join("|", loadCheats());
+
+   die <<USAGE
+@_
+
+cheatsheet: because who remembers which of those screen commands are actually useful
+
 usage:
- $(basename $0) [-h] [$cheats]
+    $prog: [-h|--help] <$cheats>
 
 where:
- -h       this message
- <other>  cheats for each utility
-
-Also check 'wpecheat' for WPEngine specific cheats
+    -h            this message
+    <other>       desired cheat
 
 USAGE
-    exit 1
+
 }
 
-cheat_awk() {
-    cat <<CHEAT
+#-------------------------------------#
+#  And all the cheats.
+#  I wanted a single file for all of these.
+#
+#
+# - A bunch of colons is just a separator, or a comment if you like
+# ::::::::::::::::::::::
+#
+# - Three colons and a word is a named cheat
+# ::: somecheat
+#
+# - For a special case: a named cheat can be a synonym for another
+# This is so you can keep the cheat alphabetized for your own sanity
+# But note that you can make this an endless loop if you really want.
+# So don't do that.
+#   Denoted by the cheat name - colon- the synonym
+#
+# ::: dc:bc
+#
+# - Otherwise, it's just text associated with the most recently named cheat
+#-------------------------------------#
+
+__DATA__
+::::::::::::::::::::::
+::: awk
+::::::::::::::::::::::
+
 awk -v p=0 '/-BEGIN CERTIFICATE-/ {p=1} p {sub(/^\s+/, ""); print} /-END CERTIFICATE-/ {p=0}'    print out just certs
 awk -v p=0 -v cmd="openssl x509 -noout -text" '/-BEGIN CERTIFICATE-/ {p=1} p {sub(/^\s+/, ""); c = c \$0 RS} /-END CERTIFICATE-/ {print c | cmd ; close(cmd); p=0; c=""}'           pipe certs to openssl
-CHEAT
-}
 
-cheat_aws() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: aws
+::::::::::::::::::::::
 
 # detailed cloud formation events
 $ aws --region us-east-2 cloudformation \\
@@ -58,17 +166,17 @@ $ aws ec2 --region us-east-1 describe-instances  \\
 # Show instances that do not have a 'Backup' key
 $ aws-okta exec corp --  aws ec2 --region us-east-1 describe-instances  \\
     --query "Reservations[].Instances[? ! not_null( Tags[?Key == 'Backup'].Value) ].[Tags[? Key == 'Name'].Value] | [] | [] | []"
-CHEAT
-}
 
-cheat_ansible() {
-    cat <<CHEAT
-$ ansible -i <inventory>  \$(hostname) -m "debug" -a "var=groups"      list the group hiearchy this host knows about
+::::::::::::::::::::::
+::: ansible
+::::::::::::::::::::::
+
+$ ansible -i <inventory>  $(hostname) -m "debug" -a "var=groups"      list the group hiearchy this host knows about
 $ ansible -i <inventory> --list-hosts protostaging                    list hosts in the "protostaging" group
 $ ansible-playbook -i <inventory>  remote.yml -l <hostname>           run remote (from cm server)
-$ ansible-playbook -i inventory/current  -l \$(hostname) local.yml     run local (from target machine)
+$ ansible-playbook -i inventory/current  -l $(hostname) local.yml     run local (from target machine)
 $ ansible -i /opt/server-cm/inventory/current \\
-    -m shell -a 'cd /opt/server-cm;ansible-playbook -i inventory/current -l \$(hostname) local.yml' \\
+    -m shell -a 'cd /opt/server-cm;ansible-playbook -i inventory/current -l $(hostname) local.yml' \\
     <hosts>
                                                                       run local (from cm server)
 $ ANSIBLE_STDOUT_CALLBACK=json ANSIBLE_LOAD_CALLBACK_PLUGINS=1        env vars to enable JSON output (great for parsing)
@@ -82,11 +190,9 @@ inventory/production/server_meta.py                                   inventory 
 inventory/development_corporate                                       static list of inventory from file
 inventory/local_cluster_only.py                                       dynamic inventory for just this cluster
 
-CHEAT
-}
-
-cheat_apt() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: apt
+::::::::::::::::::::::
 
 $ apt update                   refresh apt lists
 $ apt install <file>           install a .deb from a file (you may have to
@@ -112,11 +218,13 @@ $ dpkg -S                      list contents of a package (maybe?)
 
 $ ar -t <file>                 list contents of debian if you don't have dpkg (eg MacOS)
 $ find-dbgsym-packages pid     find the debug symbol packages for the pid.  Also can use binaries, etc
-CHEAT
-}
 
-cheat_bash() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: bash
+::::::::::::::::::::::
+
+MYDIR=$( cd $(dirname $0); pwd -P)              directory where the program resides
+
 >( cmd )                                        process substition - write output to \`cmd\` (see:
                                                 https://www.linuxjournal.com/content/shell-process-redirection)
 <( cmd )                                        process substition - read output from \`cmd\`.
@@ -125,7 +233,7 @@ exec > log.txt                                  special case of exec: redirect t
 exec > >(tee -a log.txt ) 2>&1                  combo: redirect shell's stdout to and stderr to process
                                                 running \`tee\`. This will both log values and continue
                                                 to print them to the screen.
-printf -v bytes '%s bytes' \$(( bits / 8 ))      store value in variable \`bytes\` rather than printing.
+printf -v bytes '%s bytes' $(( bits / 8 ))      store value in variable \`bytes\` rather than printing.
 
 >&2 ls                                          copy stdout to stderr then ls; writes to stderr rather than stdout
 ls > somefile.txt 2>&1                          redirect stderr and stdout to somefile.txt
@@ -148,23 +256,23 @@ while read -r line; do                          read each line from "filename" i
   # whatever                                     include "IFS=" to avoid trimming whitespace
 done < filename
 
-while [[ \$# -gt 0 ]]; do                        parse options in while loop
-  case \$1 in
+while [[ $# -gt 0 ]]; do                        parse options in while loop
+  case $1 in
     -e|--extension)
       EXTENSION="$2"
       shift # past argument
       shift # past value
     *)
-      POSITIONAL_ARGS+=("\$1") # save positional arg
+      POSITIONAL_ARGS+=("$1") # save positional arg
       shift
       ;;
   esac
 done
-CHEAT
-}
 
-cheat_bc() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: bc
+::::::::::::::::::::::
+
 bc is pretty much better than dc unless
 - you really want rpn
 - more easily reuse last
@@ -175,11 +283,10 @@ obase=16                       type in dec, print results in hex
 scale=5                        show 5 decimal places (default: 0)
 last                           use last value in calculation (e.g. last * 16)
 
-CHEAT
-}
+::::::::::::::::::::::
+::: cmdline
+::::::::::::::::::::::
 
-cheat_cmdline() {
-    cat <<CHEAT
 Moving
 ctrl+a           front of line
 ctrl+e           end of line
@@ -197,47 +304,44 @@ Substitution
 esc+.            fill in last word from previous command (e.g. "mkdir foo" then "cd esc+.")
 
 https://catonmat.net/ftp/readline-emacs-editing-mode-cheat-sheet.pdf
-CHEAT
-}
 
-cheat_curl() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: curl
+::::::::::::::::::::::
+
 curl https://somehost --resolve somehost:443:1.1.1.1:443            use the supplied IP+port when resolving the specified host+port
 curl --data @file                                                   use specificed file for the data values
 curl -s                                                             "silent" (eg quiet) mode to suppress progress bars
-CHEAT
-}
 
-cheat_date() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: date
+::::::::::::::::::::::
+
 date -r EPOCHSECONDS                mac: convert from seconds to human date
 date -d @EPOCHSECONDS               linux: convert from seconds to human date
 date +%s                            seconds since epoch
-CHEAT
-}
 
-cheat_dc() {
-    echo "(forwarding to bc)"
-    cheat_bc
-}
+::::::::::::::::::::::
+::: dc:bc
+::::::::::::::::::::::
 
-cheat_debian() {
-    echo "(Really showing apt cheats)"
-    cheat_apt
-}
+::::::::::::::::::::::
+::: debian:apt
+::::::::::::::::::::::
 
-cheat_dpkg() {
-    echo "(Really showing apt cheats)"
-    cheat_apt
-}
+::::::::::::::::::::::
+::: dpkg:apt
+::::::::::::::::::::::
 
-cheat_gdb() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: gdb
+::::::::::::::::::::::
+
 ** invocations **
-$ gdb -P \$(pidof something)         attach to pid and start debug session
+$ gdb -P $(pidof something)         attach to pid and start debug session
 $ gdb -x initfile                    execute gdb commands in "initfile" before debugging.
                                      helpful for storing breakpoints.
-$ gdb -iex "set auto-load safe-path \$(pwd -P)"
+$ gdb -iex "set auto-load safe-path $(pwd -P)"
                                      allow auto run, so you can load the python dasboard from https://github.com/cyrus-and/gdb-dashboard
 
 ** commands **
@@ -257,36 +361,35 @@ si                             single step (into) instructions
 si 16                          step over 16 instructions (one "line" when displayed x/64x)
 ni                             next intstruction; step over instructions
 
-p/x \$eax & 0xff000000          print as hex the result
-p/t \$eax & 0xff000000          print as binary the result
+p/x $eax & 0xff000000          print as hex the result
+p/t $eax & 0xff000000          print as binary the result
 p system                       print the address of the system call
-p \$_siginfo._sifields._sigfault.si_addr
+p $_siginfo._sifields._sigfault.si_addr
                                print where the sigsegv just happened
 
 set disassembly-flavor intel       show intel rather than AT&T output
 set pagination off                 turn off more
-set {int}(\$ebp-0x84) = 0x804931f   set the memory address specified to the integer value 0x804931f
+set {int}($ebp-0x84) = 0x804931f   set the memory address specified to the integer value 0x804931f
 
-x/64x \$sp-200                  eXamine (i.e. print)  memory values (first x) for 64 bytes as bytes (second x)
+x/64x $sp-200                  eXamine (i.e. print)  memory values (first x) for 64 bytes as bytes (second x)
                                start from the stack pointer minus 200 bytes
-x/s   \$sp-200                  examine the memory as if it was a string (from stack pointer - 200)
-x/i   \$pc                      examine assembly instruction of current line
-x/s   \$ebx                     examine the string that is in the memory location of $ebx (right?)
+x/s   $sp-200                  examine the memory as if it was a string (from stack pointer - 200)
+x/i   $pc                      examine assembly instruction of current line
+x/s   $ebx                     examine the string that is in the memory location of $ebx (right?)
 
-CHEAT
-}
+::::::::::::::::::::::
+::: gcloud
+::::::::::::::::::::::
 
-cheat_gcloud() {
-    cat <<CHEAT
 $ gcloud components update                update to latest gcloud
 $ gcloud config get-value project         list current project
 $ gcloud config set project <value>       set current project
 $ gcloud projects list                    list all projects
-CHEAT
-}
 
-cheat_git() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: git
+::::::::::::::::::::::
+
 $ git branch -al            list all branches
 $ git branch -vv            list all branches, showing tracking matched to local
 $ git cat-file              print size, contents, type, or hash (!!!) of an object in the repository (example of terrible git ui)
@@ -305,11 +408,10 @@ $ git show                  used to view expanded details on Git objects.
 $ git status -s             short mode
 $ git status -sb            short mode with branch information (such as remote tracking)
 
-CHEAT
-}
+::::::::::::::::::::::
+::: grep
+::::::::::::::::::::::
 
-cheat_grep() {
-    cat <<CHEAT
 grep -A N                   show N lines before match
 grep -B N                   show N lines after match
 grep -C N                   show N lines before and after match (C = context, or -A -B)
@@ -322,29 +424,28 @@ grep -R (or -r)             recursive through subdirectories.  Will not follow s
 grep -S                     with -r, follow symlinks
 grep -v                     print non-matching lines (v for inVert)
 grep -V                     print version and exit
-CHEAT
-}
 
-cheat_journalctl() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: journalctl
+::::::::::::::::::::::
+
 journalctl -u consul                            show journal for the "consul" unit (eg service)
 journalctl -u consul --since "10 minute ago"    show consul jorunal for last 10 minutes
 journalctl --list-boots                         list reboots (questionable accuracy.
                                                   Also see 'last reboot')
 
 ** show journal since last invocation consul
-journalctl _SYSTEMD_INVOCATION_ID=\$(systemctl show -p InvocationID --value consul)
+journalctl _SYSTEMD_INVOCATION_ID=$(systemctl show -p InvocationID --value consul)
 Explanation:
    _SYSTEMD_INVOCATION_ID=... is a general journalctl "FIELD=VALUE" search. See "man systemd.journal-fields" (!!)
    the systemctl call:
         -p InvocationID    show this property
         --value            but only print out the value
         consul             for this particular unit
-CHEAT
-}
+::::::::::::::::::::::
+::: jq
+::::::::::::::::::::::
 
-cheat_jq() {
-    cat <<CHEAT
 Handy references
     https://jqplay.org/
     https://stedolan.github.io/jq/manual/
@@ -361,7 +462,7 @@ $ jq '.filters | .[] | .name'                                       .filters : p
                                                                     .[]      : "value iterator": for each entry in the array, apply following filters
                                                                     .name    : extract name key from each of those entries
 
-$ jq '. | .plays[0].tasks[0].hosts | to_entries | reduce .[] as \$item ( {}; . +  {(\$item.key): \$item.value.msg})'
+$ jq '. | .plays[0].tasks[0].hosts | to_entries | reduce .[] as $item ( {}; . +  {($item.key): $item.value.msg})'
                                                                     transform ansible json output into a map of hosts to msgs
 
 $ jq -r '.[] | select(.name | test("^pvc"))                       take a list of maps.  Select only maps that have a .name member that matches the regexp
@@ -370,26 +471,26 @@ $ jq '.Tags | .[] | select(.Key | test("^Name$")) | .Value'       Iterate over t
                                                                   If Tags is empty, get an error
 $ jq '.Tags | .[]? | select(.Key | test("^Name$")) | .Value'      Same as above but with ".[]?"
                                                                   If Tags is empty, do nothing and no error.
-CHEAT
-}
 
-cheat_kubectl() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: kubectl
+::::::::::::::::::::::
+
 $ kubectl config current-context            list current context
 $ kubectl config get-contexts               list known contexts
 $ kubectl config use-context <whatever>     make <whatever> current context
 
 $ kubectx                  third party tool for context
 $ kubens                   third party tool for namespace
-CHEAT
-}
 
-cheat_k8s() {
-    cheat_kubectl
-}
+::::::::::::::::::::::
+::: k8s:kubectl
+::::::::::::::::::::::
 
-cheat_less() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: less
+::::::::::::::::::::::
+
 ** Inside of less
 v                invoke the visual editor (usually, vi)
 V                display the version of less
@@ -397,11 +498,9 @@ V                display the version of less
 ?pattern         backwards search for pattern
 &pattern         filter; only display lines which match pattern
 
-CHEAT
-}
-
-cheat_ldap() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: ldap
+::::::::::::::::::::::
 
 ** Nomenclature **
 DN                        Means "disinguished name".  The fully qualified entry,
@@ -439,52 +538,46 @@ ldapwhoami -d 1 -H ldaps://your-host -D 'cn=bogus' -w your-pass  try to ask serv
                                                                  on debugging output.  Helpful for diagnosing connection
                                                                  problems.  Error -1 means can't talk to server, error 49 means bad pw
 
-CHEAT
-}
-
-cheat_ls() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: ls
+::::::::::::::::::::::
 
 $ ls -p                    postpend a slash to directory names
 $ ls -d                    list directory names, not cotents, and show full path
 $ ls -1dp | grep -Ev '/$'  list only files
 
-CHEAT
-}
-
-cheat_lsof() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: lsof
+::::::::::::::::::::::
 
 $ lsof +d /some/dir       list open files in directory /some/dir, but do not recurse
 $ lsof +D /some/dir       list open files in directory /some/dir, but *do* recurse
 $ lsof -p 1234            open files for PID 1234
 $ lsof -u someone         open files for user 'someone'
 
-CHEAT
-}
-
-cheat_make() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: make
+::::::::::::::::::::::
 
 $ make -rRd target           concise list of what is getting evaluated by target
 $ make -n target             no-op invocation (aka dry-run)
 
-VARNAME  = "\$(othervar)"     recursive assignment.  will expand othervar each invocation.
-VARNAME := "\$(othervar)"     simple assignment.  will expand othervar only during assignment.
-VARNAME ?= "\$(othervar)"     conditional assignment. recursive assignment, but can override
+VARNAME  = "$(othervar)"     recursive assignment.  will expand othervar each invocation.
+VARNAME := "$(othervar)"     simple assignment.  will expand othervar only during assignment.
+VARNAME ?= "$(othervar)"     conditional assignment. recursive assignment, but can override
                              on command line: \`VARNAME=whatever make\`
 
 recipe: dep | order-only     the | means "build this if necessary, but don't trigger
                              a rebuild on the recipe if you do"
                              https://www.gnu.org/software/make/manual/html_node/Prerequisite-Types.html
 
-\$@                           current recipe name
-\$<                           first dependency name
-CHEAT
-}
+$@                           current recipe name
+$<                           first dependency name
 
-cheat_patch() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: patch
+::::::::::::::::::::::
+
 local: git diff the_branch...main > thechange.patch
 local: scp thechange.patch remote:~
 
@@ -492,34 +585,30 @@ remote: cd /opt/server-cm
 remote: patch -p1 --dry-run < ~/thechange.patch
 remote: patch -p1 < ~/thechange.patch
 remote: patch -p1 --reverse < ~/thechange.patch
-CHEAT
 
-}
-
-cheat_proc() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: proc
+::::::::::::::::::::::
 
 /proc/<pid>/fd              open file descriptors
 /proc/<pid>/limits          various limits (open fds, etc)
 /proc/<pid>/status          run time info (thread count, etc)
-CHEAT
-}
 
-cheat_rsyslog() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: rsyslog
+::::::::::::::::::::::
 
 ### Start writing out local4 log facility (for, e.g., ldap)
-\$ cat /etc/rsyslog.d/51-local4.conf
-\$ModLoad imuxsock.so
+$ cat /etc/rsyslog.d/51-local4.conf
+$ModLoad imuxsock.so
 local4.*                 /var/log/local4.log
 
-CHEAT
-}
+::::::::::::::::::::::
+::: screen
+::::::::::::::::::::::
 
-cheat_screen() {
-    cat <<CHEAT
 Don't know if in screen
-$ echo \$STY       will be non blank if you are inside of a screen
+$ echo $STY       will be non blank if you are inside of a screen
 
 cheatsheet https://kapeli.com/cheat_sheets/screen.docset/Contents/Resources/Documents/index
 
@@ -544,11 +633,9 @@ $ ^a+"            list windows
 $ ^a+a            send literal ctrl-a (e.g. move to front of line)
 $ ^a+A            rename current window
 
-CHEAT
-}
-
-cheat_service() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: service
+::::::::::::::::::::::
 
 service <service name> start|stop|...      performs command on the named service.
                                            this will (usually) delegate control to systemctl or init script
@@ -558,21 +645,20 @@ systemctl start|stop|... <service name>    performs command against systemd scri
 systemctl list-units                       lists all **loaded** units
 systemctl list-unit-files                  list all units on disk
 
-CHEAT
-}
+::::::::::::::::::::::
+::: ssh
+::::::::::::::::::::::
 
-cheat_ssh() {
-    cat << CHEAT
 $ ssh -n             redirect stdin to /dev/null; needed for background and to prevent ssh from sucking up stdin in a loop
-CHEAT
-}
 
-cheat_systemctl() {
-    cheat_service
-}
+::::::::::::::::::::::
+::: systemctl:service
+::::::::::::::::::::::
 
-cheat_tmux() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: tmux
+::::::::::::::::::::::
+
 tmux uses ^b like screen uses ^a
 
 ^b ?   help
@@ -583,14 +669,13 @@ tmux uses ^b like screen uses ^a
 ^b p   cycle to previous plan
 ^b :   enter command mode
 
-comands
+commands
 :set synchronize-panes on/off  when on, typing into one pane types into all panes
 
-CHEAT
-}
+::::::::::::::::::::::
+::: word
+::::::::::::::::::::::
 
-cheat_word() {
-    cat <<CHEAT
 <number> +cmd+opt           apply header # style
 A +cmd+opt                  insert annotation (i.e. comment)
 G +cmd+opt                  go-to (page, eg)
@@ -604,11 +689,10 @@ Z +cmd                      Change slant (e.g. smart) quote to straight quote
                             when typed immediately
 Return + cmd                insert page break
 F7                          open grammar check dialog
-CHEAT
-}
 
-cheat_vi() {
-    cat <<CHEAT
+::::::::::::::::::::::
+::: vi
+::::::::::::::::::::::
 
 COMMAND-LINE MODE
 :set shell=/some/shell  set vi's shell
@@ -626,25 +710,3 @@ WINDOW MANAGEMENT
 FORMATTING
 {v}}}gq     (normal mode) move to start of paragraph, start selecting, move to end of 2nd paragraph,
                apply the 'gq' format command
-CHEAT
-}
-
-if [[ "$1" == "-h" || "$1" == "--help" ]] ; then
-    usage
-elif [[ "$1" == "" ]]; then
-    cheat=cmdline
-else
-    cheat=$1
-    shift
-fi
-
-printf "Cheats for $cheat...\n\n"
-
-cheat_$cheat 2> /dev/null
-
-# detect command not found
-if [[ $? == 127 ]] ; then
-    usage No cheatsheet found for \'$cheat\'
-fi
-
-(which wpecheat > /dev/null) && wpecheat $cheat 2>&1 > /dev/null && wpecheat $cheat
