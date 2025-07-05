@@ -110,19 +110,18 @@ USAGE
 #  And all the cheats.
 #  I wanted a single file for all of these.
 #
-#
 # - A bunch of colons is just a separator, or a comment if you like
 # ::::::::::::::::::::::
 #
 # - Three colons and a word is a named cheat
 # ::: somecheat
 #
-# - For a special case: a named cheat can be a synonym for another
+# - For a special case: a named cheat can be a synonym for another.
 # This is so you can keep the cheat alphabetized for your own sanity
 # But note that you can make this an endless loop if you really want.
 # So don't do that.
-#   Denoted by the cheat name - colon- the synonym
-#
+#   Format is this cheat name - colon- the synonym.
+#   For example: as far as cheats are concerned, dc is a synonym for bc
 # ::: dc:bc
 #
 # - Otherwise, it's just text associated with the most recently named cheat
@@ -442,6 +441,7 @@ Explanation:
         -p InvocationID    show this property
         --value            but only print out the value
         consul             for this particular unit
+
 ::::::::::::::::::::::
 ::: jq
 ::::::::::::::::::::::
