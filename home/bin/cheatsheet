@@ -1,13 +1,22 @@
 #!/usr/bin/perl
 
 # cheatsheet: because who remembers which of those screen commands are actually useful
+# ...
+# maybe we should just load these into a hash
+# that would simplify listing and aliases.
+# at the expense of storing more in memory.
+# it's currently not a big deal - this is all text data that fits within 30k on disk
+# you cooooooould store an offset into the data filehandle.  Then wind to it with tell.
+# yeah, then you have to routines:
+# - loadCheats: make a hash of $cheats{NAME} = \{ "alias" :"", "offset" : 0}
+# - printCheat: resolves alias if necessary, then seeks to offset and prints data
 
 use strict;
 use warnings;
 use Getopt::Long;
 use File::Basename;
 
-GetOptions("help" => sub { usage("") }) or exit;
+GetOptions("help" => \&usage ) or exit;
 
 my $cheatname = shift || "cmdline";
 my $found     = printCheat($cheatname);
@@ -63,7 +72,6 @@ sub printCheat {
         }
         print if $found;
     }
-    close DATA;
     return $found;
 }
 
@@ -79,7 +87,6 @@ sub loadCheats {
             push @cheats, $1;
         }
     }
-    close DATA;
     return @cheats;
 }
 
@@ -87,12 +94,15 @@ sub loadCheats {
 #     help or error function
 #-------------------------------------#
 sub usage {
+    # in the case that this is called as help (i.e. "-h"),
+    # the arg array is ["help", "1"].
+    # In this case, there is no message
+    my $msg    = $_[0] eq "help" && $_[1] eq "1" ? "" : "@_\n";
     my $prog   = basename($0);
     my $cheats = join("|", loadCheats());
 
    die <<USAGE
-@_
-
+$msg
 cheatsheet: because who remembers which of those screen commands are actually useful
 
 usage:
