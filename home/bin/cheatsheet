@@ -1,29 +1,22 @@
 #!/usr/bin/perl
 
 # cheatsheet: because who remembers which of those screen commands are actually useful
-# ...
-# maybe we should just load these into a hash
-# that would simplify listing and aliases.
-# at the expense of storing more in memory.
-# it's currently not a big deal - this is all text data that fits within 30k on disk
-# you cooooooould store an offset into the data filehandle.  Then wind to it with tell.
-# yeah, then you have to routines:
-# - loadCheats: make a hash of $cheats{NAME} = \{ "alias" :"", "offset" : 0}
-# - printCheat: resolves alias if necessary, then seeks to offset and prints data
 
 use strict;
 use warnings;
 use Getopt::Long;
 use File::Basename;
 
+# NB that cheats here is accessed globally from usage
+our  $cheats   = cheatHash();
+
 GetOptions("help" => \&usage ) or exit;
 
-my $cheatname = shift || "cmdline";
-my $found     = printCheat($cheatname);
+my $desired   = shift || "cmdline";
+my $found     = printOneCheat($cheats, $desired);
 
-# tell them if you couldn't find it
 if (! $found) {
-    usage("Error: could not find cheat named '$cheatname'");
+    usage("Error: could not find cheat named '$desired'");
 }
 
 #---------------------------------------------#
@@ -76,6 +69,77 @@ sub printCheat {
 }
 
 #-------------------------------------#
+# cheatHash - build the cheathash
+#-------------------------------------#
+sub cheatHash {
+    my ($thischeat, $synonym);
+    my ($seeking);
+    my $cheats = {};
+
+    # we're going to rewind this filehandle potentially
+    seek DATA, 0, 0;
+    while (<DATA>) {
+        # breaks or comments - skip these lines
+        if (/^::::+/) {
+            next;
+        }
+
+        # a named cheat
+        if (($thischeat) = (/^:::\s*(\w+)/)) {
+            # Special case: the construct "thischeat:thatcheat" means
+            # that "thischeat" is a synonym for "thacheat".  Forward on
+            # to "thatcheat"
+            if (($synonym) = /\s*$thischeat:(\w+)/) {
+                $$cheats{$thischeat}{SYNONYM} = $synonym;
+            } else {
+                $seeking = $thischeat;
+            }
+            next;
+        }
+
+        # we've seen a named cheat, but we are looking for its
+        # actual cheat body.  If we've made it to this point, we've found it
+        if ($seeking) {
+            $$cheats{$seeking}{OFFSET} = tell DATA;
+            $seeking = undef;
+        }
+
+    }
+    return $cheats;
+}
+
+#-------------------------------------#
+# printOneCheat - print a cheat or its synonym from the cheat hash
+#-------------------------------------#
+sub printOneCheat {
+    my $cheats  = shift;
+    my $desired = shift;
+    my $found   = $$cheats{$desired};
+    my $synonym;
+
+    unless ($found) {
+        return 0;
+    }
+
+    print "Cheats for $desired...\n";
+
+    if ($synonym = $$found{SYNONYM}) {
+        print("(actually printing cheats for '$synonym')\n");
+        $found = $$cheats{$synonym};
+    }
+
+    print "\n";
+
+    seek DATA, $$found{OFFSET}, 0;
+    while (<DATA>) {
+        last if (/^::::/);
+        print;
+    }
+
+    return 1;
+}
+
+#-------------------------------------#
 # load a sorted list of cheats from DATA
 #-------------------------------------#
 sub loadCheats {
@@ -99,14 +163,14 @@ sub usage {
     # In this case, there is no message
     my $msg    = $_[0] eq "help" && $_[1] eq "1" ? "" : "@_\n";
     my $prog   = basename($0);
-    my $cheats = join("|", loadCheats());
+    my $names  = join("|", sort keys %$cheats);
 
    die <<USAGE
 $msg
 cheatsheet: because who remembers which of those screen commands are actually useful
 
 usage:
-    $prog: [-h|--help] <$cheats>
+    $prog: [-h|--help] <$names>
 
 where:
     -h            this message
@@ -282,9 +346,9 @@ done
 ::: bc
 ::::::::::::::::::::::
 
-bc is pretty much better than dc unless
-- you really want rpn
-- more easily reuse last
+bc is pretty much better than dc unless you want
+- rpn
+- to more easily reuse last
 
 ibase=16                       type in hex, print results in decimal
                                easy way to translate A0 to 160
