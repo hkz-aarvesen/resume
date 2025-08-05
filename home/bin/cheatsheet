@@ -7,7 +7,7 @@ use warnings;
 use Getopt::Long;
 use File::Basename;
 
-# NB that cheats here is accessed globally from usage
+# NB that $cheats is accessed globally from usage()
 our  $cheats   = cheatHash();
 
 GetOptions("help" => \&usage ) or exit;
@@ -24,52 +24,8 @@ if (! $found) {
 #---------------------------------------------#
 
 #-------------------------------------#
-# Print a single cheat
-#-------------------------------------#
-sub printCheat {
-    my ($desired, $isSyno)  = @_;
-    my ($printing, $found);
-    my ($thischeat, $synonym);
-
-    while (<DATA>) {
-        # breaks or comments - skip these lines
-        if (/^::::+/) {
-            next;
-        }
-
-        # a named cheat
-        if (($thischeat) = (/^:::\s*(\w+)/)) {
-            # if you've already $found your desired cheat, you're
-            # at the next cheat, and you should quit
-            if ($found) {
-                last;
-            }
-
-            # if not, see if this is the desired cheat
-            if ($found = ($desired eq $thischeat)) {
-                print "Cheats for $thischeat...\n" unless $isSyno;
-
-                # Special case: the construct "thischeat:thatcheat" means
-                # that "thischeat" is a synonym for "thacheat".  Forward on
-                # to "thatcheat"
-                if (($synonym ) = /\s*$thischeat:(\w+)/) {
-                    print("(printing cheats for '$synonym')\n");
-
-                    # reset the filehandle for reading
-                    seek DATA, 0, 0;
-                    printCheat($synonym, 1);
-                    last;
-                }
-            }
-            next;
-        }
-        print if $found;
-    }
-    return $found;
-}
-
-#-------------------------------------#
-# cheatHash - build the cheathash
+# cheatHash - build a map of cheats, synonyms, and offsets
+# returns the hash
 #-------------------------------------#
 sub cheatHash {
     my ($thischeat, $synonym);
@@ -110,6 +66,7 @@ sub cheatHash {
 
 #-------------------------------------#
 # printOneCheat - print a cheat or its synonym from the cheat hash
+# we return true or false depending on if we found the cheat
 #-------------------------------------#
 sub printOneCheat {
     my $cheats  = shift;
@@ -140,21 +97,6 @@ sub printOneCheat {
 }
 
 #-------------------------------------#
-# load a sorted list of cheats from DATA
-#-------------------------------------#
-sub loadCheats {
-    my @cheats = ();
-    # we need to rewind if we've already scanned the cheats
-    seek DATA, 0, 0;
-    while (<DATA>) {
-        if (/^:::\s*(\w+)/) {
-            push @cheats, $1;
-        }
-    }
-    return @cheats;
-}
-
-#-------------------------------------#
 #     help or error function
 #-------------------------------------#
 sub usage {
@@ -163,6 +105,8 @@ sub usage {
     # In this case, there is no message
     my $msg    = $_[0] eq "help" && $_[1] eq "1" ? "" : "@_\n";
     my $prog   = basename($0);
+
+    # nb $cheats is global
     my $names  = join("|", sort keys %$cheats);
 
    die <<USAGE
@@ -183,6 +127,10 @@ USAGE
 #-------------------------------------#
 #  And all the cheats.
 #  I wanted a single file for all of these.
+#  Philosophically, splitting the text from the code is desirable
+#  Logisitcally, a single file is way better
+#
+#  The DATA filehandle is formatted as follows
 #
 # - A bunch of colons is just a separator, or a comment if you like
 # ::::::::::::::::::::::
