@@ -566,9 +566,9 @@ ldapwhoami -d 1 -H ldaps://your-host -D 'cn=bogus' -w your-pass  try to ask serv
 ::: ls
 ::::::::::::::::::::::
 
-$ ls -p                    postpend a slash to directory names
 $ ls -d                    list directory names, not cotents, and show full path
-$ ls -1dp | grep -Ev '/$'  list only files
+$ ls -p                    postpend a slash to directory names
+$ ls -p | grep -v '/$'     list only files (probably don't need grep -E)
 
 ::::::::::::::::::::::
 ::: lsof
