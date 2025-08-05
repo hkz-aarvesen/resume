@@ -87,6 +87,10 @@ sub printOneCheat {
 
     print "\n";
 
+    # jump to the right offset in the DATA filehandle
+    # print out lines until you hit the next mess of colons, indicating
+    # that a new record is beginning (or, just print to the end of the
+    # filehandle, that is fine)
     seek DATA, $$found{OFFSET}, 0;
     while (<DATA>) {
         last if (/^::::/);
