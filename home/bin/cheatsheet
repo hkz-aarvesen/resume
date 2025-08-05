@@ -104,13 +104,12 @@ sub printOneCheat {
 #     help or error function
 #-------------------------------------#
 sub usage {
-    # in the case that this is called as help (i.e. "-h"),
-    # the arg array is ["help", "1"].
-    # In this case, there is no message
+    # When this sub is called as help (i.e. "-h"), the arg
+    # array is ["help", "1"]. In this case, there is no message.
     my $msg    = $_[0] eq "help" && $_[1] eq "1" ? "" : "@_\n";
     my $prog   = basename($0);
 
-    # nb $cheats is global
+    # nb $cheats is global. it'd be nice to memoize this but meh
     my $names  = join("|", sort keys %$cheats);
 
    die <<USAGE
@@ -130,9 +129,8 @@ USAGE
 
 #-------------------------------------#
 #  And all the cheats.
-#  I wanted a single file for all of these.
-#  Philosophically, splitting the text from the code is desirable
-#  Logisitcally, a single file is way better
+#  Philosophically, splitting the text from the code is desirable.
+#  Logistically, a single file is way better.
 #
 #  The DATA filehandle is formatted as follows
 #
