@@ -719,11 +719,18 @@ F7                          open grammar check dialog
 ::::::::::::::::::::::
 
 COMMAND-LINE MODE
-:set shell=/some/shell  set vi's shell
-:set paste              turn on paste mode (e.g. no autoindent when pasting)
-:shell                  suspend vi and goto shell (unlike "!", which runs a command and returns)
-:vert term              split vertically and open a terminal
-:w !sudo tee %  i       write only trick
+:set shell=/some/shell     set vi's shell
+:set paste                 turn on paste mode (e.g. no autoindent when pasting)
+:shell                     suspend vi and goto shell (unlike "!", which runs a command and returns)
+:vert term                 split vertically and open a terminal
+:w !sudo tee %  i          write only trick
+:new | r ! grep export #   1) open a new split
+                           2) fill that split with r (e.g. read)
+                           3) fill r from the command line (from the !)
+                           4) # gets replaced with the current file name
+                           - above reads all the lines with the word "export" in into the
+                             new split window.  Then you can past it back in.
+:vnew | r ! grep export #  same as above, but split window to the side
 
 WINDOW MANAGEMENT
 ^W v         split veritcally
