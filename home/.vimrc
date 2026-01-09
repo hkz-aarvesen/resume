@@ -7,8 +7,14 @@ set expandtab
 " colorize
 syn on
 
-" colorscheme
+" colorschemes
 colo ron
+
+" 01/2026 - the "colorresponse" code was messing with the colorscheme command.
+" Man, the worst.  Setting this global prevents the code from running.
+" See /usr/share/vim/vim91/plugin/colorresp.vim
+" If you can't find that file, check the runtimepath via "echo &rtp"
+let g:loaded_colorresp = 1
 "colo peachpuff
 
 " ensure you have line and column down on the bottom
@@ -29,6 +35,7 @@ augroup END
 autocmd Filetype yaml set kp=ri sw=2 ts=2 sts=2 expandtab
 autocmd Filetype make set noexpandtab softtabstop=0 ts=8
 
+filetype plugin indent on
 " 09/2021 - a bug where the newer version of Vim from apple turns on the debug regexp engine
 " https://github.com/vim/vim/issues/7280
 set regexpengine=0
