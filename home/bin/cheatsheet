@@ -726,6 +726,7 @@ F7                          open grammar check dialog
 ::::::::::::::::::::::
 
 COMMAND-LINE MODE
+:echo &rtp                 display vi's runtime path (the rtp variable)
 :set shell=/some/shell     set vi's shell
 :set paste                 turn on paste mode (e.g. no autoindent when pasting)
 :shell                     suspend vi and goto shell (unlike "!", which runs a command and returns)
@@ -736,7 +737,8 @@ COMMAND-LINE MODE
                            3) fill r from the command line (from the !)
                            4) # gets replaced with the current file name
                            - above reads all the lines with the word "export" in into the
-                             new split window.  Then you can past it back in.
+                             new split window.  You can then paste from the window
+                             to wherever you'd like
 :vnew | r ! grep export #  same as above, but split window to the side
 
 WINDOW MANAGEMENT
