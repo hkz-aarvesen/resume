@@ -130,9 +130,9 @@ USAGE
 #-------------------------------------#
 #  And all the cheats.
 #  Philosophically, splitting the text from the code is desirable.
-#  Logistically, a single file is way better.
+#  Logistically, a single file is easier.
 #
-#  The DATA filehandle is formatted as follows
+#  The DATA filehandle is formatted as follows:
 #
 # - A bunch of colons is just a separator, or a comment if you like
 # ::::::::::::::::::::::
@@ -304,6 +304,7 @@ ibase=16                       type in hex, print results in decimal
                                easy way to translate A0 to 160
 obase=16                       type in dec, print results in hex
 scale=5                        show 5 decimal places (default: 0)
+                               also: 'bc -S 5' on invocation
 last                           use last value in calculation (e.g. last * 16)
 
 ::::::::::::::::::::::
@@ -430,6 +431,12 @@ $ git show                  used to view expanded details on Git objects.
                                commits - log message and differ
 $ git status -s             short mode
 $ git status -sb            short mode with branch information (such as remote tracking)
+
+VERY COMMON WORKFLOWS
+$ git remote -v             display remotes
+$ git checkout -b <name>    checkout new branch name
+$ git commit -p             patch commits; lets you not commit everything
+$ git push -u origin HEAD   push current branch and set origin to be its tracking repo
 
 ::::::::::::::::::::::
 ::: grep
